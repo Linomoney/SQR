@@ -6,12 +6,15 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Santri;
 use App\Models\SqrClass;
+use App\Models\SqrLocation;
 use App\Models\Article;
 use App\Models\Income;
 use App\Models\Expense;
 use App\Models\ContentManager;
+use App\Models\OrganizationSetting;
 use App\Models\Campaign;
 use App\Models\Gallery;
+use App\Models\StudentProgress;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
 
@@ -19,17 +22,102 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Roles & Permissions
-        $adminRole  = Role::firstOrCreate(['name' => 'admin']);
-        $ustadzRole = Role::firstOrCreate(['name' => 'ustadz']);
-        $waliRole   = Role::firstOrCreate(['name' => 'wali']);
+        // 1. Seed Roles & Permissions
+        $adminRole  = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $ustadzRole = Role::firstOrCreate(['name' => 'ustadz', 'guard_name' => 'web']);
+        $waliRole   = Role::firstOrCreate(['name' => 'wali', 'guard_name' => 'web']);
 
-        // 2. Main Users
+        // 2. Seed SQR Locations
+        $locUtama = SqrLocation::firstOrCreate(
+            ['code' => 'SQR-UTAMA'],
+            [
+                'name'           => 'SQR Utama (Sukatani, Tapos Depok)',
+                'address'        => 'Jl. Puri Kemang Permai No.85, RT.002/008, Sukatani, Tapos Depok',
+                'latitude'       => '-6.393733',
+                'longitude'      => '106.878266',
+                'radius_meters'  => 30,
+                'is_active'      => true,
+            ]
+        );
+
+        $locTapos = SqrLocation::firstOrCreate(
+            ['code' => 'SQR-TAPOS'],
+            [
+                'name'           => 'SQR Cabang Tapos',
+                'address'        => 'Jl. Raya Tapos No. 12, Tapos Depok',
+                'latitude'       => '-6.402',
+                'longitude'      => '106.882',
+                'radius_meters'  => 150,
+                'is_active'      => true,
+            ]
+        );
+
+        $locCimanggis = SqrLocation::firstOrCreate(
+            ['code' => 'SQR-CIMANGGIS'],
+            [
+                'name'           => 'SQR Cabang Cimanggis',
+                'address'        => 'Jl. Raya Bogor KM 30, Cimanggis Depok',
+                'latitude'       => '-6.365',
+                'longitude'      => '106.865',
+                'radius_meters'  => 150,
+                'is_active'      => true,
+            ]
+        );
+
+        // 3. Seed Classes
+        $kelasAnak = SqrClass::firstOrCreate(
+            ['class_name' => 'Kelas Anak (Ummi 1 - 6)'],
+            [
+                'description'           => 'Kelas anak 5-12 thn',
+                'quota'                 => 30,
+                'location_id'           => $locUtama->id,
+                'start_time'            => '15:30',
+                'end_time'              => '17:00',
+                'attendance_start_time' => '15:30',
+                'attendance_end_time'   => '16:15',
+                'certificate_target'    => 100,
+                'recommendation_target' => 50,
+            ]
+        );
+
+        $kelasRemaja = SqrClass::firstOrCreate(
+            ['class_name' => 'Kelas Remaja (Tahfidz Juz 30)'],
+            [
+                'description'           => 'Kelas remaja 13-17 thn',
+                'quota'                 => 30,
+                'location_id'           => $locUtama->id,
+                'start_time'            => '15:30',
+                'end_time'              => '17:00',
+                'attendance_start_time' => '15:30',
+                'attendance_end_time'   => '16:15',
+                'certificate_target'    => 100,
+                'recommendation_target' => 50,
+            ]
+        );
+
+        $kelasDewasa = SqrClass::firstOrCreate(
+            ['class_name' => 'Kelas Dewasa (Tahsin Al-Quran)'],
+            [
+                'description'           => 'Kelas dewasa 18+ thn',
+                'quota'                 => 30,
+                'location_id'           => $locUtama->id,
+                'start_time'            => '15:30',
+                'end_time'              => '17:00',
+                'attendance_start_time' => '15:30',
+                'attendance_end_time'   => '16:15',
+                'certificate_target'    => 100,
+                'recommendation_target' => 50,
+            ]
+        );
+
+        // 4. Seed Main Users
         $admin = User::firstOrCreate(
             ['email' => 'admin@sqr.id'],
             [
-                'name'     => 'Admin Utama SQR',
-                'password' => bcrypt('password'),
+                'name'        => 'Admin Utama SQR',
+                'password'    => bcrypt('password'),
+                'is_active'   => true,
+                'location_id' => $locUtama->id,
             ]
         );
         $admin->assignRole('admin');
@@ -37,51 +125,72 @@ class DatabaseSeeder extends Seeder
         $ustadz = User::firstOrCreate(
             ['email' => 'ustadz@sqr.id'],
             [
-                'name'     => 'Ust. Ahmad Fauzi',
-                'password' => bcrypt('password'),
+                'name'        => 'Ust. Ahmad Fauzi',
+                'password'    => bcrypt('password'),
+                'is_active'   => true,
+                'class_id'    => $kelasAnak->id,
+                'gender'      => 'L',
+                'location_id' => $locUtama->id,
             ]
         );
         $ustadz->assignRole('ustadz');
 
+        $ustadzah = User::firstOrCreate(
+            ['email' => 'ustadzah.fatimah@sqr.id'],
+            [
+                'name'        => 'Ustadzah Fatimah Az-Zahra, S.Pd.I',
+                'password'    => bcrypt('password'),
+                'is_active'   => true,
+                'gender'      => 'Perempuan',
+                'phone'       => '081299887766',
+                'location_id' => $locUtama->id,
+            ]
+        );
+        $ustadzah->assignRole('ustadz');
+
         $wali = User::firstOrCreate(
             ['email' => 'wali@sqr.id'],
             [
-                'name'     => 'Bpk. Hendra Pratama',
-                'password' => bcrypt('password'),
+                'name'        => 'Bpk. Hendra Pratama',
+                'password'    => bcrypt('password'),
+                'is_active'   => true,
+                'gender'      => 'L',
+                'location_id' => $locUtama->id,
             ]
         );
         $wali->assignRole('wali');
 
-        // 3. Kelas SQR
-        $kelasAnak = SqrClass::firstOrCreate(
-            ['class_name' => 'Kelas Anak (Ummi 1 - 6)'],
-            ['description' => 'Kelas anak 5-12 thn', 'quota' => 30]
-        );
-        $kelasRemaja = SqrClass::firstOrCreate(
-            ['class_name' => 'Kelas Remaja (Tahfidz Juz 30)'],
-            ['description' => 'Kelas remaja 13-17 thn', 'quota' => 30]
-        );
-        $kelasDewasa = SqrClass::firstOrCreate(
-            ['class_name' => 'Kelas Dewasa (Tahsin Al-Quran)'],
-            ['description' => 'Kelas dewasa 18+ thn', 'quota' => 30]
-        );
-
-        // 4. Data Santri Contoh
+        // 5. Seed Santri
         $santri1 = Santri::firstOrCreate(
             ['full_name' => 'Muhammad Rizki Pratama'],
             [
-                'class_id'        => $kelasRemaja->id,
-                'wali_user_id'   => $wali->id,
-                'is_active'       => true,
-                'gender'          => 'Laki-laki',
-                'parent_name'     => 'Bpk. Hendra Pratama',
-                'phone'           => '081293721163',
-                'enrollment_date' => now()->subMonths(6),
+                'class_id'             => $kelasAnak->id,
+                'wali_user_id'        => $wali->id,
+                'is_active'            => true,
+                'gender'               => 'Laki-laki',
+                'parent_name'          => 'Bpk. Hendra Pratama',
+                'phone'                => '081293721163',
+                'enrollment_date'      => now()->subMonths(6),
+                'certificate_template' => 'elegant',
             ]
         );
 
-        // Add StudentProgress so santri1 has 30 Juz = 100% progress for certificate testing
-        \App\Models\StudentProgress::firstOrCreate(
+        $santri2 = Santri::firstOrCreate(
+            ['full_name' => 'Aisyah Az-Zahra'],
+            [
+                'class_id'             => $kelasRemaja->id,
+                'wali_user_id'        => $wali->id,
+                'is_active'            => true,
+                'gender'               => 'Perempuan',
+                'parent_name'          => 'Bpk. Hendra Pratama',
+                'phone'                => '081293721163',
+                'enrollment_date'      => now()->subMonths(3),
+                'certificate_template' => 'classic',
+            ]
+        );
+
+        // 6. Seed Student Progress (100% mutqin Juz 30)
+        StudentProgress::firstOrCreate(
             ['santri_id' => $santri1->id, 'juz_end' => 30],
             [
                 'ustadz_user_id'  => $ustadz->id,
@@ -94,20 +203,33 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $santri2 = Santri::firstOrCreate(
-            ['full_name' => 'Aisyah Az-Zahra'],
-            [
-                'class_id'        => $kelasAnak->id,
-                'wali_user_id'   => $wali->id,
-                'is_active'       => true,
-                'gender'          => 'Perempuan',
-                'parent_name'     => 'Bpk. Hendra Pratama',
-                'phone'           => '081293721163',
-                'enrollment_date' => now()->subMonths(3),
-            ]
-        );
+        // 7. Seed Organization Settings
+        $orgSettings = [
+            'org_name'               => 'Yayasan Bina Cahaya Ilmu Rabbani (SQR)',
+            'org_address'            => 'Jl. Puri Kemang Permai No.85, RT.002/008, Sukatani, Tapos Depok',
+            'org_phone'              => '081293721163',
+            'org_email'              => 'admin@sqr.id',
+            'pembina_name'           => 'Ust. Ahmad Fauzi',
+            'pembina_title'          => 'Kepala Pengasuh Saung Quran Rabbani',
+            'taruna_rate_physical'   => '50000',
+            'taruna_rate_online'     => '25000',
+            'taruna_incentive_sub'   => '15000',
+            'sqr_latitude'           => '-6.393733',
+            'sqr_longitude'          => '106.878266',
+            'sqr_radius_meters'      => '30',
+        ];
 
-        // 5. Initial Articles
+        foreach ($orgSettings as $key => $val) {
+            OrganizationSetting::firstOrCreate(['key' => $key], ['value' => $val]);
+        }
+
+        // 8. Seed Content Manager & Stats
+        ContentManager::firstOrCreate(['key' => 'home_tagline'], ['value' => 'Pondasi Quran Generasi Rabbani']);
+        ContentManager::firstOrCreate(['key' => 'stat_total_santri'], ['value' => '150+']);
+        ContentManager::firstOrCreate(['key' => 'stat_pengajar'], ['value' => '8+']);
+        ContentManager::firstOrCreate(['key' => 'stat_tahun'], ['value' => '7th']);
+
+        // 9. Seed Articles
         Article::firstOrCreate(
             ['slug' => 'metode-pembelajaran-ummi-jilid-1-xh7k'],
             [
@@ -136,13 +258,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 6. Content Manager Entries
-        ContentManager::firstOrCreate(['key' => 'home_tagline'], ['value' => 'Pondasi Quran Generasi Rabbani']);
-        ContentManager::firstOrCreate(['key' => 'stat_total_santri'], ['value' => '150+']);
-        ContentManager::firstOrCreate(['key' => 'stat_pengajar'], ['value' => '8+']);
-        ContentManager::firstOrCreate(['key' => 'stat_tahun'], ['value' => '7th']);
-
-        // 7. Seed Campaigns (SQR Berbagi Program)
+        // 10. Seed Campaigns & Galleries
         Campaign::firstOrCreate(
             ['slug' => 'jumat-berbagi-taawun-santri'],
             [
@@ -161,43 +277,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        Campaign::firstOrCreate(
-            ['slug' => 'wakaf-100-al-quran-hafalan'],
-            [
-                'title'          => 'Wakaf 100 Mus-haf Al-Quran Hafalan Santri',
-                'category'       => 'Wakaf Quran',
-                'target_amount'  => 8500000.00,
-                'current_amount' => 6200000.00,
-                'excerpt'        => 'Pengadaan mus-haf hafalan standar Tajwid berwarna untuk santri baru Saung Quran Rabbani.',
-                'description'    => 'Wakaf Al-Quran hafalan merupakan sedekah jariyah yang terus mengalirkan pahala setiap kali setiap ayat Al-Quran dibaca dan dihafal oleh para santri SQR.',
-                'image_url'      => 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=1200&auto=format&fit=crop',
-                'bank_name'      => 'Bank Syariah Indonesia (BSI)',
-                'bank_account'   => '7289-0123-45',
-                'bank_holder'    => 'Yayasan Bina Cahaya Ilmu Rabbani',
-                'is_active'      => true,
-                'end_date'       => now()->addDays(45),
-            ]
-        );
-
-        Campaign::firstOrCreate(
-            ['slug' => 'renovasi-sarana-saung-quran'],
-            [
-                'title'          => 'Renovasi & Karpet Sajadah Saung Quran',
-                'category'       => 'Fasilitas',
-                'target_amount'  => 12000000.00,
-                'current_amount' => 4500000.00,
-                'excerpt'        => 'Pengadaan karpet tebal & perbaikan pendingin ruangan kelas belajar santri agar lebih khusyu\'.',
-                'description'    => 'Kenyamanan tempat belajar Al-Quran sangat memengaruhi konsentrasi santri saat menghafal. Donasi ini digunakan untuk pembelian karpet empuk dan perbaikan pendingin ruangan kelas.',
-                'image_url'      => 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1200&auto=format&fit=crop',
-                'bank_name'      => 'Bank Syariah Indonesia (BSI)',
-                'bank_account'   => '7289-0123-45',
-                'bank_holder'    => 'Yayasan Bina Cahaya Ilmu Rabbani',
-                'is_active'      => true,
-                'end_date'       => now()->addDays(60),
-            ]
-        );
-
-        // 8. Seed Photo Gallery Items
         Gallery::firstOrCreate(
             ['title' => 'Kegiatan KBM Santri Ummi Jilid 1-6'],
             [
@@ -209,62 +288,11 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        Gallery::firstOrCreate(
-            ['title' => 'Setoran Hafalan Tahfidz Remaja'],
-            [
-                'category'    => 'KBM Santri',
-                'image_url'   => 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1200&auto=format&fit=crop',
-                'description' => 'Proses ujian dan penyetoran hafalan mutqin Juz 30 oleh santri remaja SQR.',
-                'event_date'  => now()->subDays(12),
-                'is_featured' => true,
-            ]
-        );
-
-        Gallery::firstOrCreate(
-            ['title' => 'Penyaluran Paket Jumat Berbagi Santri'],
-            [
-                'category'    => 'Donasi',
-                'image_url'   => 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&auto=format&fit=crop',
-                'description' => 'Pembagian snack sehat dan hidangan berkah untuk santri seusai shalat Jumat.',
-                'event_date'  => now()->subDays(3),
-                'is_featured' => true,
-            ]
-        );
-
-        Gallery::firstOrCreate(
-            ['title' => 'Sanlat Ramadhan & Mabit Santri'],
-            [
-                'category'    => 'Sanlat',
-                'image_url'   => 'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=1200&auto=format&fit=crop',
-                'description' => 'Kegiatan Pesantren Kilat Ramadhan dan Malam Bina Iman Taqwa (MABIT) santri SQR.',
-                'event_date'  => now()->subDays(20),
-                'is_featured' => true,
-            ]
-        );
-
-        Gallery::firstOrCreate(
-            ['title' => 'Kajian Tematik Parenting Quran'],
-            [
-                'category'    => 'Kajian',
-                'image_url'   => 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1200&auto=format&fit=crop',
-                'description' => 'Kajian bulanan wali santri bersama ustadz pembina mengenai kurikulum pengajaran di rumah.',
-                'event_date'  => now()->subDays(15),
-                'is_featured' => true,
-            ]
-        );
-
-        Gallery::firstOrCreate(
-            ['title' => 'Wisuda & Haflah Akhir Sanah Tahfidz'],
-            [
-                'category'    => 'Wisuda',
-                'image_url'   => 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop',
-                'description' => 'Penyerahan sertifikat kelulusan dan penyerahan mahkota untuk orang tua santri mutqin.',
-                'event_date'  => now()->subDays(30),
-                'is_featured' => true,
-            ]
-        );
-
-        // 8. Seed SPP Payments (100% Lunas Dummy)
+        // 11. Run Dedicated Financial & SPP Seeders
         $this->call(SppPaymentSeeder::class);
+        $this->call(FinancialSyncSeeder::class);
+        $this->call(SchoolScheduleSeeder::class);
+
+        $this->command->info('✅ DatabaseSeeder berhasil mengesekusi seluruh seeder utama!');
     }
 }
