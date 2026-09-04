@@ -8,10 +8,12 @@
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-white/15 pb-4 mb-5">
             <div class="flex items-center gap-3">
-                <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR" class="w-10 h-10 rounded-full object-cover shadow-md">
+                <div class="w-10 h-10 bg-white rounded-2xl p-1 shadow-md border border-white/20 flex items-center justify-center shrink-0 overflow-hidden">
+                    <img src="/logo_sqr.png" alt="Logo SQR" class="w-full h-full object-contain">
+                </div>
                 <div class="leading-none">
                     <span class="font-title font-bold text-sm text-sqr-bg block">Saung Quran</span>
-                    <span class="text-[10px] text-sqr-orange font-bold block mt-0.5 uppercase tracking-wider">Rabbani Bogor</span>
+                    <span class="text-[10px] text-sqr-orange font-bold block mt-0.5 uppercase tracking-wider">Rabbani</span>
                 </div>
             </div>
             <button onclick="toggleMobileSidebar()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition">
@@ -73,6 +75,9 @@
 
     <!-- Sidebar Footer -->
     <div class="pt-4 border-t border-white/10 space-y-2 mt-4">
+        <button type="button" onclick="installPWA()" class="btn-pwa-install w-full bg-sqr-green hover:bg-emerald-800 text-white font-bold text-xs py-3 rounded-xl transition border border-white/20 block text-center cursor-pointer">
+            <i class="fa-solid fa-mobile-screen-button text-sqr-orange mr-1.5"></i> Install App SQR
+        </button>
         @auth
             <a href="{{ route('redirect') }}" class="w-full bg-sqr-orange hover:bg-orange-600 text-white font-bold text-xs py-3 rounded-xl transition shadow-md block text-center">
                 <i class="fa-solid fa-user-circle mr-1.5"></i> Dashboard Portal

@@ -39,7 +39,7 @@
                     <i class="fa-solid fa-location-dot"></i>
                 </div>
                 <h3 class="font-title font-bold text-sqr-green text-sm">Lokasi Saung</h3>
-                <p class="text-xs text-gray-500 mt-1">Bogor / Depok, Jawa Barat</p>
+                <p class="text-xs text-gray-500 mt-1">Depok, Jawa Barat</p>
             </a>
         </div>
 

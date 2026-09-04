@@ -31,7 +31,7 @@
                         <h3 class="font-title font-bold text-sqr-green text-sm">Alamat Lengkap</h3>
                     </div>
                     <p class="text-xs text-gray-600 leading-relaxed">
-                        Jl. Saung Quran Rabbani, Depok / Bogor, Jawa Barat<br>
+                        Jl. Saung Quran Rabbani, Depok, Jawa Barat<br>
                         (Detail alamat dan patokan lengkap dapat ditanyakan via WhatsApp Admin)
                     </p>
                     <a href="https://maps.google.com" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-sqr-orange font-bold hover:underline mt-3">

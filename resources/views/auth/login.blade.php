@@ -30,7 +30,7 @@
         <!-- Logo & Header Title -->
         <div class="text-center mb-6">
             <div class="inline-flex items-center justify-center w-24 h-24 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-3 mb-4 ring-4 ring-white/10 transform hover:scale-105 transition-transform duration-300">
-                <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="SQR Logo" class="w-full h-full object-contain filter drop-shadow-md">
+                <img src="/logo_sqr.png" alt="SQR Logo" class="w-full h-full object-contain filter drop-shadow-md">
             </div>
             <h1 class="font-title text-2xl sm:text-3xl font-black text-white tracking-tight">Saung Quran Rabbani</h1>
             <p class="text-sqr-light-green font-bold text-xs mt-1">Portal Log In Sistem Informasi & Manajemen</p>

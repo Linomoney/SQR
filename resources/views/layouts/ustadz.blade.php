@@ -5,15 +5,15 @@
 
     {{-- ===== NAVBAR USTADZ ===== --}}
     <nav class="bg-[#2d4a22] shadow-lg px-4 py-3 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-[#e67e22] rounded-lg flex items-center justify-center">
-                <i class="fa-solid fa-book-quran text-white text-sm"></i>
+        <a href="{{ route('home') }}" class="flex items-center gap-2.5 group">
+            <div class="w-9 h-9 bg-white rounded-2xl p-1 shadow-md border border-white/20 flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform duration-200">
+                <img src="/logo_sqr.png" alt="Logo SQR" class="w-full h-full object-contain">
             </div>
             <div>
                 <h1 class="text-white font-bold text-sm leading-tight">Dashboard Ustadz</h1>
                 <p class="text-[#a3c585] text-[10px]">{{ auth()->user()->name }}</p>
             </div>
-        </div>
+        </a>
 
         <div class="flex items-center gap-3">
             {{-- Notif bell --}}

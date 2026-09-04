@@ -179,7 +179,7 @@
 
             <div>
                 <label class="block text-xs font-bold text-gray-700 mb-1">Alamat Lengkap</label>
-                <input type="text" name="address" id="modalAddress" placeholder="Jl. Raya Bogor KM 30..."
+                <input type="text" name="address" id="modalAddress" placeholder="Jl. Raya Margonda..."
                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-xs text-gray-800 outline-none focus:border-sqr-orange">
             </div>
 

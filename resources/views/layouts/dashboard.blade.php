@@ -75,8 +75,8 @@
     <aside class="w-64 bg-sqr-dark text-white flex flex-col shrink-0 shadow-2xl z-30 hidden md:flex sticky top-0 h-screen">
         <!-- Brand -->
         <div class="p-5 border-b border-white/10 flex items-center gap-3 bg-sqr-green/40">
-            <div class="w-10 h-10 bg-sqr-orange rounded-xl flex items-center justify-center text-white shadow-md">
-                <i class="fa-solid fa-book-quran text-xl"></i>
+            <div class="w-10 h-10 bg-white rounded-2xl p-1 shadow-md border border-white/20 flex items-center justify-center shrink-0 overflow-hidden">
+                <img src="/logo_sqr.png" alt="Logo SQR" class="w-full h-full object-contain">
             </div>
             <div>
                 <h1 class="font-title font-bold text-sm text-sqr-bg leading-none">Saung Quran</h1>
@@ -286,8 +286,8 @@
             <div>
                 <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 bg-sqr-orange rounded-xl flex items-center justify-center text-white">
-                            <i class="fa-solid fa-book-quran"></i>
+                        <div class="w-9 h-9 bg-white rounded-2xl p-1 shadow-md border border-white/20 flex items-center justify-center shrink-0 overflow-hidden">
+                            <img src="/logo_sqr.png" alt="Logo SQR" class="w-full h-full object-contain">
                         </div>
                         <div>
                             <p class="font-title font-bold text-sm text-sqr-bg">Saung Quran</p>

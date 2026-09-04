@@ -89,7 +89,7 @@
             Total Sesi: <strong>{{ $summary['total_sessions'] }} sesi</strong>
         </p>
 
-        <p style="font-size: 12px; color: #999;">Dikeluarkan di Bogor, {{ now()->isoFormat('D MMMM Y') }}</p>
+        <p style="font-size: 12px; color: #999;">Dikeluarkan di Depok, {{ now()->isoFormat('D MMMM Y') }}</p>
 
         <div class="signatures">
             <div class="sign-block">

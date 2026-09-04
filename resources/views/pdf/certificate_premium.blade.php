@@ -240,7 +240,7 @@ body { font-family: 'DejaVu Sans', Arial, sans-serif; background: #fff; }
         <table class="sig-table">
             <tr>
                 <td class="sig-td" style="padding-right: 15px;">
-                    <p class="sig-city">{{ $orgSettings['organization_city'] ?? 'Bogor' }}, {{ now()->translatedFormat('d F Y') }}</p>
+                    <p class="sig-city">{{ $orgSettings['organization_city'] ?? 'Depok' }}, {{ now()->translatedFormat('d F Y') }}</p>
                     <p class="sig-role">Pimpinan Lembaga</p>
                     <div class="sig-box">
                         @if(!empty($sigImg))
@@ -256,7 +256,7 @@ body { font-family: 'DejaVu Sans', Arial, sans-serif; background: #fff; }
                 </td>
 
                 <td class="sig-td" style="padding-left: 15px;">
-                    <p class="sig-city">{{ $orgSettings['organization_city'] ?? 'Bogor' }}, {{ now()->translatedFormat('d F Y') }}</p>
+                    <p class="sig-city">{{ $orgSettings['organization_city'] ?? 'Depok' }}, {{ now()->translatedFormat('d F Y') }}</p>
                     <p class="sig-role">Ustadz/Ustadzah Pengampu</p>
                     <div class="sig-box"></div>
                     <div class="sig-line"></div>

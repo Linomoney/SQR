@@ -4,10 +4,12 @@
         
         <!-- Logo & Brand Name -->
         <a href="{{ route('home') }}" class="flex items-center gap-2.5 group shrink-0 whitespace-nowrap">
-            <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR" class="h-10 sm:h-11 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
+            <div class="w-10 sm:w-11 h-10 sm:h-11 bg-white rounded-2xl p-1 shadow-md border border-white/20 flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                <img src="/logo_sqr.png" alt="Logo SQR" class="w-full h-full object-contain">
+            </div>
             <div class="leading-none">
                 <span class="font-title font-black text-sm sm:text-base text-sqr-bg tracking-wide block">SAUNG QURAN</span>
-                <span class="text-[9px] sm:text-[10px] font-bold text-sqr-orange uppercase tracking-widest block mt-0.5">RABBANI BOGOR</span>
+                <span class="text-[9px] sm:text-[10px] font-bold text-sqr-orange uppercase tracking-widest block mt-0.5">RABBANI</span>
             </div>
         </a>
 
@@ -70,6 +72,9 @@
 
         <!-- Right Action Buttons -->
         <div class="hidden sm:flex items-center gap-2.5 shrink-0 whitespace-nowrap">
+            <button type="button" onclick="installPWA()" class="btn-pwa-install bg-sqr-light-green/20 hover:bg-sqr-light-green/30 text-sqr-bg font-bold text-xs px-3.5 py-2.5 rounded-xl transition border border-sqr-light-green/30 flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-mobile-screen-button text-sqr-orange"></i> Install App SQR
+            </button>
             <a href="{{ route('ppdb.create') }}" class="bg-sqr-orange hover:bg-orange-600 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition shadow-md flex items-center gap-1.5 whitespace-nowrap">
                 <i class="fa-solid fa-pen-to-square"></i> PPDB Online
             </a>

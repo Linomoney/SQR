@@ -9,15 +9,15 @@
         class="fixed inset-y-0 left-0 z-40 w-64 bg-[#2d4a22] text-white flex flex-col transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex-shrink-0">
 
         {{-- Logo --}}
-        <div class="flex items-center gap-3 px-5 py-5 border-b border-white/10">
-            <div class="w-10 h-10 bg-[#e67e22] rounded-xl flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-book-quran text-white text-lg"></i>
+        <a href="{{ route('home') }}" class="flex items-center gap-3 px-5 py-5 border-b border-white/10 group">
+            <div class="w-10 h-10 bg-white rounded-2xl p-1 shadow-md border border-white/20 flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform duration-200">
+                <img src="/logo_sqr.png" alt="Logo SQR" class="w-full h-full object-contain">
             </div>
             <div>
-                <div class="font-black text-sm leading-tight">Saung Quran</div>
+                <div class="font-black text-sm leading-tight text-white">Saung Quran</div>
                 <div class="text-[10px] text-[#a3c585] font-medium">Rabbani · Admin Panel</div>
             </div>
-        </div>
+        </a>
 
         {{-- Nav --}}
         <nav class="flex-1 overflow-y-auto py-4 space-y-0.5 px-3">

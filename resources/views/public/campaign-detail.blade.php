@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $campaign->title . ' - Campaign Donasi SQR')
-@section('meta_description', $campaign->excerpt ?? 'Program donasi dan ta\'awun Saung Quran Rabbani Bogor')
+@section('meta_description', $campaign->excerpt ?? 'Program donasi dan ta\'awun Saung Quran Rabbani')
 
 @section('content')
 

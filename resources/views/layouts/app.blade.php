@@ -6,6 +6,16 @@
     <meta name="description" content="@yield('meta_description', 'Saung Quran Rabbani - Sistem Manajemen Lembaga Pendidikan Quran')">
     <title>@yield('title', 'SQR') – Saung Quran Rabbani</title>
 
+    <!-- PWA Manifest & App Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2d4a22">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SQR App">
+    <link rel="apple-touch-icon" href="/logo_sqr.png">
+    <link rel="icon" type="image/png" href="/logo_sqr.png">
+
     <!-- Google Fonts: Montserrat & Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -136,6 +146,41 @@
 
     <!-- Tom Select JS -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+    <!-- PWA Service Worker & Installation Handler -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                    console.log('SQR PWA ServiceWorker active:', reg.scope);
+                }).catch(function(err) {
+                    console.log('SQR PWA ServiceWorker error:', err);
+                });
+            });
+        }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btnList = document.querySelectorAll('.btn-pwa-install');
+            btnList.forEach(btn => btn.classList.remove('hidden'));
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted PWA install');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert('Aplikasi Saung Quran Rabbani dapat ditambahkan ke layar utama hp/laptop Anda melalui menu browser (Pilih "Tambahkan ke Layar Utama" / "Install App").');
+            }
+        }
+    </script>
     @stack('scripts')
 </body>
 </html>

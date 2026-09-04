@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Pendaftaran PPDB Online - Saung Quran Rabbani')
-@section('meta_description', 'Formulir Pendaftaran Peserta Didik Baru Saung Quran Rabbani Bogor. Daftar online dengan mudah dan cepat.')
+@section('meta_description', 'Formulir Pendaftaran Peserta Didik Baru Saung Quran Rabbani. Daftar online dengan mudah dan cepat.')
 
 @section('content')
 
@@ -204,7 +204,7 @@
                             <label class="block text-xs font-bold text-gray-700 mb-1.5">Tempat Lahir</label>
                             <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir') }}"
                                    class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-3.5 py-3 text-xs font-semibold text-gray-800 focus:bg-white focus:ring-2 focus:ring-sqr-green/30 focus:border-sqr-green outline-none transition"
-                                   placeholder="Contoh: Bogor">
+                                   placeholder="Contoh: Depok">
                         </div>
 
                         <div>
@@ -231,7 +231,7 @@
                             <label class="block text-xs font-bold text-gray-700 mb-1.5">Sekolah Asal Santri</label>
                             <input type="text" name="sekolah_asal" value="{{ old('sekolah_asal') }}"
                                    class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-3.5 py-3 text-xs font-semibold text-gray-800 focus:bg-white focus:ring-2 focus:ring-sqr-green/30 focus:border-sqr-green outline-none transition"
-                                   placeholder="Contoh: SDN Padasuka 01 Bogor">
+                                   placeholder="Contoh: SDN Beji 01">
                         </div>
                     </div>
 
@@ -377,14 +377,14 @@
                             <label class="block text-xs font-bold text-gray-700 mb-1.5">Desa / Kelurahan</label>
                             <input type="text" name="desa_kelurahan" value="{{ old('desa_kelurahan') }}"
                                    class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-3.5 py-3 text-xs font-semibold text-gray-800 focus:bg-white focus:ring-2 focus:ring-sqr-green/30 focus:border-sqr-green outline-none transition"
-                                   placeholder="Kelurahan Cibogor">
+                                   placeholder="Kelurahan Beji">
                         </div>
 
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-bold text-gray-700 mb-1.5">Kota / Kabupaten</label>
                             <input type="text" name="kota" value="{{ old('kota') }}"
                                    class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-3.5 py-3 text-xs font-semibold text-gray-800 focus:bg-white focus:ring-2 focus:ring-sqr-green/30 focus:border-sqr-green outline-none transition"
-                                   placeholder="Kota Bogor">
+                                   placeholder="Kota Depok">
                         </div>
                     </div>
 
