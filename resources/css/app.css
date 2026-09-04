@@ -1,0 +1,40 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+    --sqr-bg: #f0f8d3;
+    --sqr-green: #2d4a22;
+    --sqr-orange: #e67e22;
+    --sqr-light-green: #a3c585;
+    --sqr-dark: #1c3115;
+}
+
+/* Fallback SQR Theme Color Utilities */
+.bg-sqr-bg { background-color: #f0f8d3 !important; }
+.bg-sqr-green { background-color: #2d4a22 !important; }
+.bg-sqr-orange { background-color: #e67e22 !important; }
+.bg-sqr-light-green { background-color: #a3c585 !important; }
+.bg-sqr-dark { background-color: #1c3115 !important; }
+
+.text-sqr-bg { color: #f0f8d3 !important; }
+.text-sqr-green { color: #2d4a22 !important; }
+.text-sqr-orange { color: #e67e22 !important; }
+.text-sqr-light-green { color: #a3c585 !important; }
+.text-sqr-dark { color: #1c3115 !important; }
+
+.border-sqr-bg { border-color: #f0f8d3 !important; }
+.border-sqr-green { border-color: #2d4a22 !important; }
+.border-sqr-orange { border-color: #e67e22 !important; }
+.border-sqr-light-green { border-color: #a3c585 !important; }
+.border-sqr-dark { border-color: #1c3115 !important; }
+
+.font-montserrat { font-family: 'Montserrat', sans-serif !important; }
+.font-poppins { font-family: 'Poppins', sans-serif !important; }
+.font-title { font-family: 'Montserrat', sans-serif !important; }
+
+/* Custom SQR scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f0f8d3; }
+::-webkit-scrollbar-thumb { background: #a3c585; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2d4a22; }

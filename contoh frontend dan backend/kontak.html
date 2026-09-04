@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+    <title>Kontak SQR – Saung Quran Rabbani</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'sqr-bg': '#f0f8d3', 'sqr-green': '#2d4a22', 'sqr-orange': '#e67e22', 'sqr-light-green': '#a3c585', 'sqr-dark': '#1c3115' },
+                    fontFamily: { 'montserrat': ['Montserrat', 'sans-serif'], 'poppins': ['Poppins', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+            max-width: 100%;
+            font-size: clamp(14px, 1.2vw, 17px);
+            min-height: 100%;
+        }
+
+        body {
+            background-color: #f0f8d3;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            max-width: 100%;
+            min-height: 100vh;
+        }
+
+        .font-title {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        @media (max-width: 1023px) {
+            html {
+                font-size: 4vw !important;
+            }
+        }
+
+        /* ===== LAYOUT MODE OVERRIDES ===== */
+        html.desktop-site-mode {
+            font-size: 15px !important;
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 20px rgba(45, 74, 34, 0.08);
+            border: 1px solid rgba(45, 74, 34, 0.08);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(45, 74, 34, 0.14);
+        }
+
+        .form-input-k {
+            width: 100%;
+            border: 1.5px solid #d1d5db;
+            border-radius: 0.875rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            outline: none;
+            background: white;
+            color: #111827;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input-k:focus {
+            border-color: #e67e22;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.12);
+        }
+
+        .form-select-k {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e67e22' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 18px;
+            padding-right: 40px !important;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1023px) {
+            .form-input-k {
+                font-size: 0.9rem !important;
+                padding: 10px 12px !important;
+            }
+
+            .contact-card {
+                padding: 1.1rem !important;
+                border-radius: 1rem !important;
+            }
+
+            .contact-container-grid {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .contact-container-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+            }
+        }
+
+        /* MOBILE-SITE-MODE: Override Tailwind md: classes (GAS iframe = 980px) */
+        html.desktop-site-mode .contact-container-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+    </style>
+    <script>
+        (function () {
+            // GAS MOBILE FIX: screen.width tidak terpengaruh GAS viewport 980px
+            function updateLayoutMode() {
+                var ua = navigator.userAgent;
+                var isMobileUA = /Mobile|Android|iPhone|iPod|IEMobile|Opera Mini/i.test(ua);
+                var screenW = (window.screen && window.screen.width) ? window.screen.width : window.innerWidth;
+                var html = document.documentElement;
+                var isMobileDevice = isMobileUA && screenW < 768;
+                if (isMobileDevice) {
+                    html.classList.add('mobile-site-mode');
+                    html.classList.remove('desktop-site-mode');
+                } else {
+                    html.classList.add('desktop-site-mode');
+                    html.classList.remove('mobile-site-mode');
+                }
+            }
+            updateLayoutMode();
+            window.addEventListener('resize', updateLayoutMode);
+        })();
+    </script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="sticky top-0 z-50 bg-sqr-green/95 backdrop-blur-md shadow-lg px-4 py-3 flex items-center gap-3">
+        <a href="javascript:void(0)" onclick="goBack()"
+            class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-arrow-left"></i> Kembali
+        </a>
+        <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR"
+            class="w-9 h-9 rounded-full object-cover shadow-md">
+        <div>
+            <p class="font-title font-black text-white text-base sm:text-lg leading-tight">Kontak SQR</p>
+            <p class="text-sqr-light-green text-xs sm:text-sm font-semibold">Saung Quran Rabbani</p>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div
+        class="bg-gradient-to-br from-sqr-dark via-sqr-green to-sqr-green text-white px-6 py-10 text-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10"
+            style="background-image:radial-gradient(circle,rgba(255,255,255,0.2)1px,transparent 1px);background-size:24px 24px;">
+        </div>
+        <div class="relative z-10">
+            <h1 class="font-title font-black text-2xl md:text-4xl text-white">Hubungi Kami</h1>
+            <p class="text-sqr-light-green text-sm mt-2">Tim SQR siap membantu pertanyaan Anda</p>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="contact-container-grid gap-6">
+
+            <!-- Kolom Form Kontak (Tampil di atas pada HP / kanan pada Desktop) -->
+            <div class="lg:order-2">
+                <h2 class="font-title font-bold text-sqr-green text-base sm:text-lg flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-paper-plane text-sqr-orange"></i> Kirim Pesan
+                </h2>
+                <div class="contact-card">
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs sm:text-sm font-bold text-gray-700 block mb-1">Nama Lengkap *</label>
+                            <input type="text" id="k_nama" class="form-input-k" placeholder="Nama Anda">
+                        </div>
+                        <div>
+                            <label class="text-xs sm:text-sm font-bold text-gray-700 block mb-1">Nomor WhatsApp
+                                *</label>
+                            <input type="tel" id="k_wa" class="form-input-k" placeholder="08xxxxxxxxxx">
+                        </div>
+                        <div>
+                            <label class="text-xs sm:text-sm font-bold text-gray-700 block mb-1">Topik</label>
+                            <select id="k_topik" class="form-input-k form-select-k">
+                                <option value="Pendaftaran Santri">Pendaftaran Santri (PPDB)</option>
+                                <option value="Jadwal & Kelas">Jadwal & Kelas</option>
+                                <option value="Biaya & Pembayaran">Biaya & Pembayaran</option>
+                                <option value="Kerjasama">Kerjasama & Kemitraan</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs sm:text-sm font-bold text-gray-700 block mb-1">Pesan *</label>
+                            <textarea id="k_pesan" class="form-input-k" rows="4"
+                                placeholder="Tulis pertanyaan atau pesan Anda di sini..."></textarea>
+                        </div>
+                        <button onclick="kirimPesan()"
+                            class="w-full bg-sqr-green hover:bg-green-900 text-white font-bold py-3 px-4 rounded-2xl transition flex items-center justify-center gap-2 text-sm sm:text-base shadow-md">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> Kirim via WhatsApp
+                        </button>
+                        <p class="text-xs sm:text-sm font-bold text-gray-700 text-center mt-2.5">
+                            <i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i> Pesan akan dikirim langsung
+                            ke WhatsApp Admin SQR
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Info Kontak (Tampil di bawah pada HP / kiri pada Desktop) -->
+            <div class="lg:order-1 space-y-4">
+                <h2 class="font-title font-bold text-sqr-green text-base sm:text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-address-book text-sqr-orange"></i> Informasi Kontak
+                </h2>
+
+                <div class="contact-card flex items-start gap-4">
+                    <div class="w-11 h-11 bg-emerald-100 rounded-2xl flex items-center justify-center shrink-0">
+                        <i class="fa-brands fa-whatsapp text-emerald-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm sm:text-base text-gray-800">WhatsApp Admin</p>
+                        <a id="kontak_wa_link" href="https://wa.me/6289677082002" target="_blank"
+                            class="text-sqr-green font-bold text-sm sm:text-base hover:underline block mt-0.5"
+                            id="wa_display">0896-7708-2002</a>
+                        <p class="text-xs sm:text-sm font-semibold text-gray-600 mt-1" id="kontak_jam_layanan">
+                            Senin–Sabtu · 08.00–20.00 WIB</p>
+                    </div>
+                </div>
+
+                <div class="contact-card flex items-start gap-4">
+                    <div class="w-11 h-11 bg-blue-100 rounded-2xl flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-envelope text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm sm:text-base text-gray-800">Email</p>
+                        <a id="kontak_email_link" href="mailto:info@sqr.id"
+                            class="text-sqr-green font-bold text-sm sm:text-base hover:underline block mt-0.5"
+                            id="email_display">info@sqr.id</a>
+                        <p class="text-xs sm:text-sm font-semibold text-gray-600 mt-1">Untuk keperluan resmi & kemitraan
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contact-card flex items-start gap-4">
+                    <div class="w-11 h-11 bg-orange-100 rounded-2xl flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-location-dot text-sqr-orange text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm sm:text-base text-gray-800">Lokasi</p>
+                        <p class="text-sqr-green text-xs sm:text-sm font-semibold mt-0.5">Depok, Jawa Barat</p>
+                        <a onclick="goToLokasi()"
+                            class="text-xs sm:text-sm font-bold text-sqr-orange cursor-pointer hover:underline mt-1.5 inline-block">
+                            <i class="fa-solid fa-map-location-dot mr-1"></i>Lihat Peta →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sosial Media -->
+                <div class="contact-card">
+                    <p class="font-bold text-sm sm:text-base text-gray-800 mb-3"><i
+                            class="fa-solid fa-share-nodes text-sqr-orange mr-2"></i>Ikuti Kami</p>
+                    <div class="flex gap-3">
+                        <a href="#"
+                            class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center text-white hover:opacity-80 transition"
+                            title="Instagram">
+                            <i class="fa-brands fa-instagram text-base"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white hover:opacity-80 transition"
+                            title="YouTube">
+                            <i class="fa-brands fa-youtube text-base"></i>
+                        </a>
+                        <a href="https://wa.me/6289677082002" target="_blank"
+                            class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white hover:opacity-80 transition"
+                            title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp text-base"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-sqr-dark text-white text-center py-6 mt-8">
+        <p class="text-xs opacity-60">&copy; 2026 Saung Quran Rabbani · Yayasan Bina Cahaya Ilmu Rabbani</p>
+    </footer>
+
+    <script>
+        function getGasBaseUrl() {
+            var url = '';
+            try {
+                if (window.top && window.top.location && window.top.location.href) {
+                    url = window.top.location.href;
+                }
+            } catch (e) { }
+            if (!url && typeof window.__GAS_BASE_URL__ !== 'undefined' && window.__GAS_BASE_URL__) {
+                url = window.__GAS_BASE_URL__;
+            }
+            if (!url) {
+                url = window.location.href;
+            }
+            return url.split('?')[0].split('#')[0];
+        }
+        var adminWaNumber = '6289677082002';
+
+        function goBack() {
+            if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.location.href = 'index.html';
+            } else {
+                window.top.location.href = getGasBaseUrl() + '?page=home';
+            }
+        }
+        function goToLokasi() {
+            if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.location.href = 'lokasi.html';
+            } else {
+                window.top.location.href = getGasBaseUrl() + '?page=lokasi';
+            }
+        }
+
+        function kirimPesan() {
+            var nama = document.getElementById('k_nama').value.trim();
+            var wa = document.getElementById('k_wa').value.trim();
+            var topik = document.getElementById('k_topik').value;
+            var pesan = document.getElementById('k_pesan').value.trim();
+            if (!nama || !pesan) { alert('Nama dan pesan wajib diisi.'); return; }
+            var text = 'Halo Admin SQR 👋\n\n*Nama:* ' + nama + '\n*WhatsApp:* ' + (wa || '-') +
+                '\n*Topik:* ' + topik + '\n\n*Pesan:*\n' + pesan +
+                '\n\n_(Dikirim dari halaman Kontak SQR)_';
+            window.open('https://wa.me/' + adminWaNumber + '?text=' + encodeURIComponent(text), '_blank');
+        }
+
+        // Load konten dinamis
+        window.addEventListener('DOMContentLoaded', function () {
+            google.script.run
+                .withSuccessHandler(function (contents) {
+                    if (!contents) return;
+                    var data = {};
+                    contents.forEach(function (c) { if (c.key) data[c.key] = c.value; });
+                    if (data.kontak_admin_wa) {
+                        adminWaNumber = data.kontak_admin_wa.replace(/\D/g, '');
+                        var num = data.kontak_admin_wa;
+                        document.getElementById('kontak_wa_link').href = 'https://wa.me/' + adminWaNumber;
+                        document.getElementById('kontak_wa_link').textContent = num;
+                    }
+                    if (data.kontak_email) {
+                        document.getElementById('kontak_email_link').href = 'mailto:' + data.kontak_email;
+                        document.getElementById('kontak_email_link').textContent = data.kontak_email;
+                    }
+                    if (data.kontak_jam_layanan) {
+                        document.getElementById('kontak_jam_layanan').textContent = data.kontak_jam_layanan;
+                    }
+                })
+                .withFailureHandler(function () { })
+                .getAllContents();
+        });
+    </script>
+</body>
+
+</html>

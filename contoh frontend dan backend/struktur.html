@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+    <title>Struktur Pengurus SQR – Saung Quran Rabbani</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'sqr-bg': '#f0f8d3', 'sqr-green': '#2d4a22', 'sqr-orange': '#e67e22', 'sqr-light-green': '#a3c585', 'sqr-dark': '#1c3115' },
+                    fontFamily: { 'montserrat': ['Montserrat', 'sans-serif'], 'poppins': ['Poppins', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+            max-width: 100%;
+            font-size: clamp(14px, 1.2vw, 17px);
+            min-height: 100%;
+        }
+
+        body {
+            background-color: #f0f8d3;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            max-width: 100%;
+            min-height: 100vh;
+        }
+
+        .font-title {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        @media (max-width: 1023px) {
+            html {
+                font-size: 4vw !important;
+            }
+        }
+
+        /* ===== LAYOUT MODE OVERRIDES ===== */
+        html.desktop-site-mode {
+            font-size: 15px !important;
+        }
+
+        /* ===== ORG CHART TREE ===== */
+        .org-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .org-level {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .org-level::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 2rem;
+            background: linear-gradient(to bottom, #a3c585, #2d4a22);
+        }
+
+        .org-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .org-connector .line-v {
+            width: 2px;
+            height: 2rem;
+            background: linear-gradient(to bottom, #2d4a22, #a3c585);
+        }
+
+        .org-connector .line-h-wrap {
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .org-connector .line-h {
+            height: 2px;
+            background: #a3c585;
+            position: absolute;
+            top: 0;
+        }
+
+        .org-node-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .org-node-line-top {
+            width: 2px;
+            height: 1.5rem;
+            background: #a3c585;
+        }
+
+        .org-card {
+            background: white;
+            border: 2px solid rgba(45, 74, 34, 0.12);
+            border-radius: 1rem;
+            padding: 0.875rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(45, 74, 34, 0.1);
+            transition: all 0.3s ease;
+            min-width: 140px;
+            max-width: 190px;
+        }
+
+        .org-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(45, 74, 34, 0.18);
+            border-color: #e67e22;
+        }
+
+        .org-card.level-0 {
+            background: linear-gradient(135deg, #2d4a22, #1c3115);
+            color: white;
+            border-color: #e67e22;
+            min-width: 230px;
+            max-width: 280px;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .org-card.level-1 {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            border-color: #e67e22;
+            min-width: 190px;
+            max-width: 230px;
+            padding: 1rem 1.25rem;
+        }
+
+        .org-card.level-2 {
+            background: white;
+            border-color: rgba(163, 197, 133, 0.6);
+            min-width: 150px;
+            max-width: 190px;
+            padding: 0.875rem 1rem;
+        }
+
+        .org-card.level-3 {
+            background: #f0f8d3;
+            border-color: rgba(163, 197, 133, 0.4);
+            min-width: 130px;
+            max-width: 165px;
+            padding: 0.75rem 0.875rem;
+        }
+
+        .org-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin: 0 auto 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .org-card.level-0 .org-avatar {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .org-card.level-1 .org-avatar {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .org-card.level-2 .org-avatar {
+            background: #f0f8d3;
+            color: #2d4a22;
+        }
+
+        .org-card.level-3 .org-avatar {
+            background: rgba(45, 74, 34, 0.08);
+            color: #2d4a22;
+            width: 38px;
+            height: 38px;
+            font-size: 0.95rem;
+        }
+
+        /* Vertical line from parent to children row */
+        .tree-vline {
+            width: 2px;
+            height: 2rem;
+            background: linear-gradient(to bottom, #2d4a22, #a3c585);
+            margin: 0 auto;
+        }
+
+        /* Horizontal line spanning children */
+        .tree-hline-wrap {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .tree-hline {
+            height: 2px;
+            background: #a3c585;
+            position: absolute;
+            top: 0;
+        }
+
+        @media (max-width: 1023px) {
+            .org-card {
+                min-width: 130px !important;
+                max-width: 165px !important;
+                padding: 0.75rem 0.75rem !important;
+                border-radius: 0.875rem !important;
+            }
+
+            .org-card.level-0 {
+                min-width: 200px !important;
+                max-width: 250px !important;
+                padding: 1rem !important;
+            }
+
+            .org-card.level-1 {
+                min-width: 160px !important;
+                max-width: 200px !important;
+            }
+
+            .org-level {
+                gap: 0.6rem !important;
+            }
+
+            .org-avatar {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 0.95rem !important;
+            }
+
+            #orgChartWrapper {
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 1.5rem !important;
+            }
+        }
+    </style>
+    <script>
+        (function () {
+            // GAS MOBILE FIX: screen.width tidak terpengaruh GAS viewport 980px
+            function updateLayoutMode() {
+                var ua = navigator.userAgent;
+                var isMobileUA = /Mobile|Android|iPhone|iPod|IEMobile|Opera Mini/i.test(ua);
+                var screenW = (window.screen && window.screen.width) ? window.screen.width : window.innerWidth;
+                var html = document.documentElement;
+                var isMobileDevice = isMobileUA && screenW < 768;
+                if (isMobileDevice) {
+                    html.classList.add('mobile-site-mode');
+                    html.classList.remove('desktop-site-mode');
+                } else {
+                    html.classList.add('desktop-site-mode');
+                    html.classList.remove('mobile-site-mode');
+                }
+            }
+            updateLayoutMode();
+            window.addEventListener('resize', updateLayoutMode);
+        })();
+    </script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="sticky top-0 z-50 bg-sqr-green/95 backdrop-blur-md shadow-lg px-4 py-3 flex items-center gap-3">
+        <a href="javascript:void(0)" onclick="goBack()"
+            class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-arrow-left"></i> Kembali
+        </a>
+        <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR"
+            class="w-9 h-9 rounded-full object-cover shadow-md">
+        <div>
+            <p class="font-title font-black text-white text-base sm:text-lg leading-tight">Struktur Pengurus SQR</p>
+            <p class="text-sqr-light-green text-xs sm:text-sm font-semibold">Saung Quran Rabbani</p>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div
+        class="bg-gradient-to-br from-sqr-dark via-sqr-green to-sqr-green text-white px-6 py-10 text-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10"
+            style="background-image:radial-gradient(circle,rgba(255,255,255,0.2)1px,transparent 1px);background-size:24px 24px;">
+        </div>
+        <div class="relative z-10">
+            <h1 class="font-title font-black text-2xl md:text-4xl">Struktur Pengurus SQR</h1>
+            <p class="text-sqr-light-green text-sm mt-2">Yayasan Bina Cahaya Ilmu Rabbani</p>
+        </div>
+    </div>
+
+    <!-- ORG CHART -->
+    <div class="max-w-6xl mx-auto px-4 py-8 overflow-x-auto" id="orgChartWrapper">
+        <div class="org-tree" id="orgChart">
+            <!-- Dinamis via JS -->
+            <div class="text-center text-sqr-green text-sm py-8 opacity-50">
+                <i class="fa-solid fa-spinner fa-spin mr-2"></i> Memuat struktur...
+            </div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="max-w-3xl mx-auto px-4 pb-8">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <p class="text-xs font-bold text-gray-600 mb-2"><i
+                    class="fa-solid fa-circle-info text-sqr-orange mr-1.5"></i>Keterangan</p>
+            <div class="flex flex-wrap gap-3 text-xs">
+                <div class="flex items-center gap-1.5">
+                    <div class="w-5 h-3 rounded-sm bg-sqr-green"></div><span>Yayasan / Pimpinan Tertinggi</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <div class="w-5 h-3 rounded-sm bg-sqr-orange"></div><span>Ketua / Pimpinan</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <div class="w-5 h-3 rounded-sm bg-white border border-gray-200"></div><span>Kepala Divisi</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <div class="w-5 h-3 rounded-sm bg-sqr-bg border border-gray-200"></div><span>Anggota / Staf</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-sqr-dark text-white text-center py-6">
+        <p class="text-xs opacity-60">&copy; 2026 Saung Quran Rabbani · Yayasan Bina Cahaya Ilmu Rabbani</p>
+    </footer>
+
+    <script>
+        function getGasBaseUrl() {
+            var url = '';
+            try {
+                if (window.top && window.top.location && window.top.location.href) {
+                    url = window.top.location.href;
+                }
+            } catch (e) { }
+            if (!url && typeof window.__GAS_BASE_URL__ !== 'undefined' && window.__GAS_BASE_URL__) {
+                url = window.__GAS_BASE_URL__;
+            }
+            if (!url) {
+                url = window.location.href;
+            }
+            return url.split('?')[0].split('#')[0];
+        }
+
+        function goBack() {
+            if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.location.href = 'index.html';
+            } else {
+                window.top.location.href = getGasBaseUrl() + '?page=home';
+            }
+        }
+
+        // Default struktur (bisa override dari ContentManager key "struktur_pengurus")
+        var defaultStruktur = {
+            level0: { nama: 'Yayasan Bina Cahaya Ilmu Rabbani', jabatan: 'Lembaga Induk', icon: 'fa-building-columns' },
+            level1: [
+                { nama: 'Pendiri SQR', jabatan: 'Pimpinan & Pendiri', icon: 'fa-star' }
+            ],
+            level2: [
+                { nama: 'Div. Pendidikan', jabatan: 'Kurikulum & Pengajaran', icon: 'fa-book-open' },
+                { nama: 'Div. Keuangan', jabatan: 'Keuangan & Kas', icon: 'fa-coins' },
+                { nama: 'Div. Humas', jabatan: 'Komunikasi & Publikasi', icon: 'fa-bullhorn' },
+                { nama: 'Div. Program', jabatan: 'Acara & Kegiatan', icon: 'fa-calendar-check' }
+            ],
+            level3: [
+                { nama: 'Ustadz / Ustadzah', jabatan: 'Pengajar & Pembimbing', icon: 'fa-chalkboard-teacher', divisi: 0 },
+                { nama: 'Staf Keuangan', jabatan: 'Bendahara', icon: 'fa-file-invoice-dollar', divisi: 1 },
+                { nama: 'Staf Humas', jabatan: 'Desainer & Admin Medsos', icon: 'fa-pen-nib', divisi: 2 },
+                { nama: 'Koordinator Acara', jabatan: 'Panitia Program', icon: 'fa-people-group', divisi: 3 }
+            ]
+        };
+
+        function getInitials(name) {
+            return name.split(' ').map(function (w) { return w[0]; }).join('').toUpperCase().substring(0, 2);
+        }
+
+        var currentOrgData = defaultStruktur;
+
+        function renderOrgChart(data) {
+            if (data) currentOrgData = data;
+            var chart = document.getElementById('orgChart');
+            if (!chart) return;
+            // GAS MOBILE FIX: innerWidth selalu 980px di GAS iframe, tidak bisa dipakai
+            // Gunakan class mobile-site-mode yang sudah diset IIFE berdasarkan screen.width + UA
+            var isMobile = document.documentElement.classList.contains('mobile-site-mode');
+            var html = '';
+
+            if (isMobile) {
+                // MOBILE RENDER: Vertical Stack Card View (Aman dari Overflow & Bentrokan)
+                html += '<div class="space-y-4 w-full max-w-md mx-auto px-1 py-2">';
+
+                // Level 0: Yayasan
+                html += '<div class="bg-gradient-to-r from-sqr-green via-sqr-dark to-sqr-green text-white p-5 rounded-2xl shadow-lg border-2 border-sqr-orange text-center flex flex-col items-center gap-2">';
+                html += '<div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl text-sqr-orange shadow-inner"><i class="fa-solid ' + currentOrgData.level0.icon + '"></i></div>';
+                html += '<div><p class="font-title font-black text-base sm:text-lg text-white leading-tight">' + currentOrgData.level0.nama + '</p>';
+                html += '<p class="text-xs sm:text-sm text-sqr-light-green font-semibold mt-1">' + currentOrgData.level0.jabatan + '</p></div></div>';
+
+                html += '<div class="flex justify-center"><i class="fa-solid fa-circle-chevron-down text-sqr-orange text-xl my-1"></i></div>';
+
+                // Level 1: Pendiri
+                if (currentOrgData.level1 && currentOrgData.level1.length) {
+                    currentOrgData.level1.forEach(function (node) {
+                        html += '<div class="bg-gradient-to-r from-sqr-orange via-orange-500 to-sqr-orange text-white p-4 rounded-2xl shadow-md text-center flex flex-col items-center gap-2">';
+                        html += '<div class="w-10 h-10 rounded-full bg-white/25 flex items-center justify-center text-lg text-white"><i class="fa-solid ' + node.icon + '"></i></div>';
+                        html += '<div><p class="font-title font-black text-base leading-tight">' + node.nama + '</p>';
+                        html += '<p class="text-xs font-semibold text-orange-100 mt-0.5">' + node.jabatan + '</p></div></div>';
+                    });
+                    html += '<div class="flex justify-center"><i class="fa-solid fa-circle-chevron-down text-sqr-green text-xl my-1"></i></div>';
+                }
+
+                // Level 2 & 3: Divisi Cards Stacked Vertically
+                if (currentOrgData.level2 && currentOrgData.level2.length) {
+                    html += '<div class="space-y-3.5">';
+                    html += '<p class="text-xs font-bold uppercase tracking-wider text-sqr-green text-center mb-2"><i class="fa-solid fa-sitemap mr-1"></i> Divisi & Pengurus Operasional</p>';
+
+                    currentOrgData.level2.forEach(function (node, idx) {
+                        var subs = currentOrgData.level3 ? currentOrgData.level3.filter(function (n) { return n.divisi === idx; }) : [];
+
+                        html += '<div class="bg-white rounded-2xl p-4 shadow-md border-2 border-sqr-green/20 flex flex-col gap-3">';
+                        // Divisi Header
+                        html += '<div class="flex items-center gap-3 border-b border-gray-100 pb-3">';
+                        html += '<div class="w-11 h-11 rounded-2xl bg-sqr-green/10 flex items-center justify-center text-sqr-green text-xl shrink-0"><i class="fa-solid ' + node.icon + '"></i></div>';
+                        html += '<div><p class="font-title font-black text-base text-sqr-green leading-tight">' + node.nama + '</p>';
+                        html += '<p class="text-xs font-semibold text-gray-600 mt-0.5">' + node.jabatan + '</p></div>';
+                        html += '</div>';
+
+                        // Staf / Member Sub-cards
+                        if (subs.length) {
+                            html += '<div class="grid grid-cols-1 gap-2 pt-1">';
+                            subs.forEach(function (sub) {
+                                html += '<div class="bg-sqr-bg/90 border border-sqr-green/30 rounded-xl p-3 flex items-center gap-3">';
+                                html += '<div class="w-9 h-9 rounded-xl bg-sqr-green/20 flex items-center justify-center text-sqr-green text-base shrink-0"><i class="fa-solid ' + sub.icon + '"></i></div>';
+                                html += '<div><p class="font-bold text-xs sm:text-sm text-sqr-dark leading-tight">' + sub.nama + '</p>';
+                                html += '<p class="text-xs font-semibold text-gray-500 mt-0.5">' + sub.jabatan + '</p></div>';
+                                html += '</div>';
+                            });
+                            html += '</div>';
+                        }
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                }
+
+                html += '</div>';
+            } else {
+                // DESKTOP RENDER: Tree Chart Horizontal
+                html += '<div class="org-node-wrap mb-0">';
+                html += '<div class="org-card level-0"><div class="org-avatar"><i class="fa-solid ' + currentOrgData.level0.icon + '"></i></div>';
+                html += '<p class="font-title font-black text-base sm:text-lg leading-tight">' + currentOrgData.level0.nama + '</p>';
+                html += '<p class="text-xs sm:text-sm font-semibold opacity-90 mt-1">' + currentOrgData.level0.jabatan + '</p>';
+                html += '</div></div>';
+
+                if (currentOrgData.level1 && currentOrgData.level1.length) {
+                    html += '<div class="tree-vline"></div>';
+                    html += '<div class="flex justify-center gap-6 flex-wrap">';
+                    currentOrgData.level1.forEach(function (node) {
+                        html += '<div class="org-node-wrap">';
+                        html += '<div class="tree-vline" style="height:1rem;"></div>';
+                        html += '<div class="org-card level-1"><div class="org-avatar"><i class="fa-solid ' + node.icon + '"></i></div>';
+                        html += '<p class="font-title font-black text-base sm:text-lg leading-tight">' + node.nama + '</p>';
+                        html += '<p class="text-xs sm:text-sm font-semibold opacity-90 mt-1">' + node.jabatan + '</p>';
+                        html += '</div></div>';
+                    });
+                    html += '</div>';
+                }
+
+                if (currentOrgData.level2 && currentOrgData.level2.length) {
+                    html += '<div class="tree-vline"></div>';
+                    html += '<div class="flex justify-center gap-4 flex-wrap" id="level2row">';
+                    currentOrgData.level2.forEach(function (node, idx) {
+                        html += '<div class="org-node-wrap" id="l2node_' + idx + '">';
+                        html += '<div class="tree-vline" style="height:1rem;"></div>';
+                        html += '<div class="org-card level-2"><div class="org-avatar"><i class="fa-solid ' + node.icon + ' text-sqr-green text-sm"></i></div>';
+                        html += '<p class="font-title font-black text-sm sm:text-base text-sqr-green leading-tight">' + node.nama + '</p>';
+                        html += '<p class="text-xs font-semibold text-gray-600 mt-1">' + node.jabatan + '</p>';
+                        html += '</div>';
+
+                        var subs = currentOrgData.level3 ? currentOrgData.level3.filter(function (n) { return n.divisi === idx; }) : [];
+                        if (subs.length) {
+                            html += '<div class="tree-vline" style="height:1rem;"></div>';
+                            html += '<div class="flex justify-center gap-2 flex-wrap">';
+                            subs.forEach(function (sub) {
+                                html += '<div class="org-node-wrap">';
+                                html += '<div class="tree-vline" style="height:0.75rem;"></div>';
+                                html += '<div class="org-card level-3"><div class="org-avatar"><i class="fa-solid ' + sub.icon + ' text-sqr-green text-xs"></i></div>';
+                                html += '<p class="font-title font-bold text-xs sm:text-sm text-sqr-green leading-tight">' + sub.nama + '</p>';
+                                html += '<p class="text-xs font-semibold text-gray-500 mt-0.5">' + sub.jabatan + '</p>';
+                                html += '</div></div>';
+                            });
+                            html += '</div>';
+                        }
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                }
+            }
+
+            chart.innerHTML = html;
+        }
+
+        window.addEventListener('resize', function () {
+            renderOrgChart(currentOrgData);
+        });
+
+        window.addEventListener('DOMContentLoaded', function () {
+            google.script.run
+                .withSuccessHandler(function (contents) {
+                    var data = defaultStruktur;
+                    if (contents) {
+                        var contentMap = {};
+                        contents.forEach(function (c) { if (c.key) contentMap[c.key] = c.value; });
+                        if (contentMap.struktur_pengurus) {
+                            try { data = JSON.parse(contentMap.struktur_pengurus); } catch (e) { }
+                        }
+                    }
+                    renderOrgChart(data);
+                })
+                .withFailureHandler(function () { renderOrgChart(defaultStruktur); })
+                .getAllContents();
+        });
+    </script>
+</body>
+
+</html>

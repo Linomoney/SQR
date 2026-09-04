@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+    <title>Lokasi SQR – Saung Quran Rabbani</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'sqr-bg': '#f0f8d3', 'sqr-green': '#2d4a22', 'sqr-orange': '#e67e22', 'sqr-light-green': '#a3c585', 'sqr-dark': '#1c3115' },
+                    fontFamily: { 'montserrat': ['Montserrat', 'sans-serif'], 'poppins': ['Poppins', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+            max-width: 100%;
+            font-size: clamp(14px, 1.2vw, 17px);
+            min-height: 100%;
+        }
+
+        body {
+            background-color: #f0f8d3;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            max-width: 100%;
+            min-height: 100vh;
+        }
+
+        .font-title {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* GAS Mobile: viewport dipaksa 980px oleh GAS iframe.
+           @media (max-width:1023px) aktif di GAS mobile (980px < 1024px). */
+        @media (max-width: 1023px) {
+            html {
+                font-size: 4vw !important;
+            }
+        }
+
+        /* ===== LAYOUT MODE OVERRIDES ===== */
+        /* HP pakai mode Desktop → tambahkan class desktop-site-mode */
+        html.desktop-site-mode {
+            font-size: 15px !important;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 20px rgba(45, 74, 34, 0.08);
+            border: 1px solid rgba(45, 74, 34, 0.08);
+            padding: 1.25rem 1.5rem;
+        }
+
+        .map-frame {
+            width: 100%;
+            height: 420px;
+            border-radius: 1.5rem;
+            border: 3px solid rgba(45, 74, 34, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        @media (max-width: 1023px) {
+            .sqr-nav-links { display: none !important; }
+            .sqr-ham-btn { display: flex !important; }
+            .map-frame { height: 280px !important; border-radius: 1rem !important; }
+            .info-card { padding: 1rem 1.1rem !important; border-radius: 1rem !important; }
+            .lokasi-grid { display: flex !important; flex-direction: column !important; }
+        }
+        @media (min-width: 1024px) {
+            .sqr-nav-links { display: flex !important; }
+            .sqr-ham-btn { display: none !important; }
+            .lokasi-grid { display: grid !important; grid-template-columns: 2fr 3fr !important; }
+        }
+        /* Override via JS class untuk mode Desktop Site di HP */
+        html.desktop-site-mode .sqr-nav-links { display: flex !important; }
+        html.desktop-site-mode .sqr-ham-btn { display: none !important; }
+        html.desktop-site-mode .lokasi-grid { display: grid !important; grid-template-columns: 2fr 3fr !important; }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background: #e67e22;
+            border-radius: 50%;
+            animation: pulseDot 1.5s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes pulseDot {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.4);
+                opacity: 0.7;
+            }
+        }
+    </style>
+    <script>
+        (function () {
+            // GAS MOBILE FIX: screen.width tidak terpengaruh GAS viewport 980px
+            function updateLayoutMode() {
+                var ua = navigator.userAgent;
+                var isMobileUA = /Mobile|Android|iPhone|iPod|IEMobile|Opera Mini/i.test(ua);
+                var screenW = (window.screen && window.screen.width) ? window.screen.width : window.innerWidth;
+                var html = document.documentElement;
+                var isMobileDevice = isMobileUA && screenW < 768;
+                if (isMobileDevice) {
+                    html.classList.add('mobile-site-mode');
+                    html.classList.remove('desktop-site-mode');
+                } else {
+                    html.classList.add('desktop-site-mode');
+                    html.classList.remove('mobile-site-mode');
+                }
+            }
+            updateLayoutMode();
+            window.addEventListener('resize', updateLayoutMode);
+        })();
+    </script>
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="sticky top-0 z-50 bg-sqr-green/95 backdrop-blur-md shadow-lg px-4 py-3 flex items-center gap-3">
+        <a href="javascript:void(0)" onclick="goBack()"
+            class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-arrow-left"></i> Kembali
+        </a>
+        <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR"
+            class="w-9 h-9 rounded-full object-cover shadow-md">
+        <div>
+            <p class="font-title font-black text-white text-base sm:text-lg leading-tight">Lokasi SQR</p>
+            <p class="text-sqr-light-green text-xs sm:text-sm font-semibold">Saung Quran Rabbani</p>
+        </div>
+    </nav>
+
+    <!-- ===== HERO BANNER ===== -->
+    <div class="bg-sqr-green text-white px-6 py-10 text-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10"
+            style="background-image: radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 24px 24px;">
+        </div>
+        <div class="relative z-10">
+            <div
+                class="inline-flex items-center gap-2 bg-sqr-orange/20 border border-sqr-orange/40 text-sqr-orange px-4 py-1.5 rounded-full text-xs font-bold mb-4">
+                <span class="pulse-dot"></span> Lokasi Aktif
+            </div>
+            <h1 class="font-title font-black text-2xl md:text-4xl text-white">Lokasi Pengajian SQR</h1>
+            <p class="text-sqr-light-green text-sm mt-2">Temukan kami & bergabunglah dalam kegiatan belajar Al-Quran</p>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        <div class="lokasi-grid gap-6">
+
+            <!-- Peta Lokasi (Tampil Di Atas pada Mobile) -->
+            <div class="lg:order-2 lg:col-span-3">
+                <div class="sticky top-20">
+                    <h2 class="font-title font-bold text-sqr-green text-base mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-map text-sqr-orange"></i> Peta Lokasi
+                    </h2>
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.0975!2d106.8757012!3d-6.3936950!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69eb70e83f9d27%3A0xbda34da948e4806a!2sSQR!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+                        class="map-frame" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        title="Peta Lokasi SQR">
+                    </iframe>
+                    <p class="text-xs sm:text-sm font-semibold text-gray-700 mt-2.5 text-center">
+                        <i class="fa-solid fa-circle-info text-sqr-orange mr-1"></i>
+                        Koordinat: -6.3937003, 106.8782815 · Klik peta untuk navigasi
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kolom Info Kontak & Petunjuk (Tampil Di Bawah Peta pada Mobile) -->
+            <div class="lg:order-1 lg:col-span-2 space-y-4">
+
+                <!-- Alamat -->
+                <div class="info-card">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-sqr-green/10 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-location-dot text-sqr-orange text-sm"></i>
+                        </div>
+                        <h3 class="font-title font-bold text-sqr-green text-sm" id="loc-title">Alamat Lengkap</h3>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed" id="lokasi_alamat">
+                        Jl. Saung Quran Rabbani, Depok, Jawa Barat<br>
+                        (Detail alamat dapat ditanyakan via WhatsApp)
+                    </p>
+                    <a href="https://maps.app.goo.gl/VyhmUzXzjj94jxGCA" target="_blank"
+                        class="mt-3 flex items-center gap-2 text-sqr-orange text-xs font-bold hover:underline">
+                        <i class="fa-solid fa-map-location-dot"></i> Buka di Google Maps
+                    </a>
+                </div>
+
+                <!-- Jam Operasional -->
+                <div class="info-card">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-sqr-green/10 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-clock text-sqr-orange text-sm"></i>
+                        </div>
+                        <h3 class="font-title font-bold text-sqr-green text-sm">Jam Operasional</h3>
+                    </div>
+                    <div class="space-y-2 text-xs" id="lokasi_jam_operasional">
+                        <div class="flex justify-between py-1 border-b border-gray-50">
+                            <span class="font-semibold text-gray-700">Kelas Anak</span>
+                            <span class="text-sqr-green font-bold">Sen–Kam 15.30 · Sab 08.00</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-gray-50">
+                            <span class="font-semibold text-gray-700">Kelas Remaja</span>
+                            <span class="text-sqr-green font-bold">Sel & Kam 16.00 · Sab 10.00</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-semibold text-gray-700">Kelas Dewasa</span>
+                            <span class="text-sqr-green font-bold">Rab & Jum 19.30 · Ahd 08.30</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Petunjuk Arah -->
+                <div class="info-card">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-sqr-green/10 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-route text-sqr-orange text-sm"></i>
+                        </div>
+                        <h3 class="font-title font-bold text-sqr-green text-sm">Petunjuk Arah</h3>
+                    </div>
+                    <div class="space-y-2.5 text-xs text-gray-600">
+                        <div class="flex gap-2.5">
+                            <i class="fa-solid fa-car text-sqr-orange mt-0.5 shrink-0"></i>
+                            <span>Dari Jakarta: Tol Cijago → Exit Sawangan → arahkan ke lokasi via Google Maps</span>
+                        </div>
+                        <div class="flex gap-2.5">
+                            <i class="fa-solid fa-bus text-sqr-orange mt-0.5 shrink-0"></i>
+                            <span>Angkutan umum: KRL → Stasiun Depok → angkot/ojek online ke lokasi</span>
+                        </div>
+                        <div class="flex gap-2.5">
+                            <i class="fa-brands fa-whatsapp text-emerald-500 mt-0.5 shrink-0"></i>
+                            <span>Hubungi admin SQR via WhatsApp untuk petunjuk detail</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Aksi -->
+                <div class="flex flex-col gap-2">
+                    <a href="https://www.google.com/maps/place/SQR/@-6.393695,106.8757012,17z/data=!4m14!1m7!3m6!1s0x2e69eb70e83f9d27:0xbda34da948e4806a!2sSQR!8m2!3d-6.3937003!4d106.8782815!16s%2Fg%2F11jyk1ty6f!3m5!1s0x2e69eb70e83f9d27:0xbda34da948e4806a!8m2!3d-6.3937003!4d106.8782815!16s%2Fg%2F11jyk1ty6f?entry=ttu"
+                        target="_blank"
+                        class="w-full bg-sqr-green hover:bg-green-900 text-white font-bold py-3 px-4 rounded-2xl transition flex items-center justify-center gap-2 text-xs shadow-md">
+                        <i class="fa-solid fa-map-location-dot"></i> Buka Google Maps
+                    </a>
+                    <a href="https://wa.me/6289677082002?text=Halo%20Admin%20SQR%2C%20saya%20ingin%20tahu%20petunjuk%20arah%20ke%20lokasi%20pengajian%20SQR"
+                        target="_blank"
+                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-2xl transition flex items-center justify-center gap-2 text-xs shadow-md">
+                        <i class="fa-brands fa-whatsapp"></i> Tanya Petunjuk via WA
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-sqr-dark text-white text-center py-6 mt-8">
+        <p class="text-xs opacity-60">&copy; 2026 Saung Quran Rabbani · Yayasan Bina Cahaya Ilmu Rabbani</p>
+    </footer>
+
+    <script>
+        function getGasBaseUrl() {
+            var url = '';
+            try {
+                if (window.top && window.top.location && window.top.location.href) {
+                    url = window.top.location.href;
+                }
+            } catch (e) { }
+            if (!url && typeof window.__GAS_BASE_URL__ !== 'undefined' && window.__GAS_BASE_URL__) {
+                url = window.__GAS_BASE_URL__;
+            }
+            if (!url) {
+                url = window.location.href;
+            }
+            return url.split('?')[0].split('#')[0];
+        }
+
+        function goBack() {
+            if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.location.href = 'index.html';
+            } else {
+                window.top.location.href = getGasBaseUrl() + '?page=home';
+            }
+        }
+
+        // Load dynamic content dari ContentManager
+        window.addEventListener('DOMContentLoaded', function () {
+            google.script.run
+                .withSuccessHandler(function (contents) {
+                    if (!contents) return;
+                    var data = {};
+                    contents.forEach(function (c) { if (c.key) data[c.key] = c.value; });
+
+                    if (data.lokasi_alamat) {
+                        document.getElementById('lokasi_alamat').innerHTML = data.lokasi_alamat.replace(/\n/g, '<br>');
+                    }
+                    if (data.lokasi_jam_operasional) {
+                        document.getElementById('lokasi_jam_operasional').innerHTML = data.lokasi_jam_operasional.replace(/\n/g, '<br>');
+                    }
+                })
+                .withFailureHandler(function () { })
+                .getAllContents();
+        });
+    </script>
+</body>
+
+</html>

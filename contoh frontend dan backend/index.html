@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+    <title>SQR - Pondasi Quran Generasi Rabbani</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                // KRITIS: Breakpoints digeser agar GAS viewport 980px masuk ke base (mobile) style.
+                // Dengan sm:1024px, semua Tailwind responsive class (sm:, md:, lg:) hanya aktif
+                // di layar >= 1024px (desktop nyata), sehingga HP di GAS selalu tampil mobile.
+                screens: {
+                    'sm':  '1024px',
+                    'md':  '1280px',
+                    'lg':  '1440px',
+                    'xl':  '1600px',
+                    '2xl': '1920px'
+                },
+                extend: {
+                    colors: {
+                        'sqr-bg': '#f0f8d3',
+                        'sqr-green': '#2d4a22',
+                        'sqr-orange': '#e67e22',
+                        'sqr-light-green': '#a3c585',
+                        'sqr-dark': '#1c3115'
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        /* GAS Mobile: viewport dipaksa 980px oleh GAS iframe.
+           @media (max-width:1023px) aktif di GAS mobile (980px < 1024px). */
+        @media (max-width: 1023px) {
+            html { font-size: 4vw !important; }
+        }
+        @media (min-width: 1024px) {
+            html { font-size: clamp(14px, 1.2vw, 17px); }
+        }
+        .font-title { font-family: 'Montserrat', sans-serif; }
+
+        /* ===== SLIDE SECTION ===== */
+        .slide-section {
+            min-height: 100vh;
+            min-height: 100svh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 1.5rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ===== NAVBAR ACTIVE STATE FIX ===== */
+        .nav-btn {
+            transition: all 0.25s ease;
+        }
+        .nav-btn.active {
+            background-color: #2d4a22 !important;
+            color: white !important;
+            border-color: #2d4a22 !important;
+        }
+        .nav-btn:not(.active):hover {
+            background-color: #f0f8d3;
+            color: #2d4a22;
+        }
+
+        /* ===== AOS: GANTI DENGAN CSS ANIMATION MURNI (tidak butuh JS AOS) ===== */
+        /* Masalah: AOS menyembunyikan elemen (opacity:0) sampai JS AOS.init() dipanggil.
+           Di GAS iframe, jika data loading lambat, konten tidak pernah muncul.
+           Solusi: animasikan langsung dengan CSS keyframes tanpa butuh library. */
+        @keyframes fadeInUp   { from { opacity:0; transform: translateY(30px);  } to { opacity:1; transform: none; } }
+        @keyframes fadeInLeft { from { opacity:0; transform: translateX(-30px); } to { opacity:1; transform: none; } }
+        @keyframes fadeInRight{ from { opacity:0; transform: translateX(30px);  } to { opacity:1; transform: none; } }
+        @keyframes zoomIn     { from { opacity:0; transform: scale(0.9);        } to { opacity:1; transform: none; } }
+
+        /* Semua elemen data-aos LANGSUNG tampil — tidak perlu AOS.init() */
+        [data-aos="fade-up"]    { animation: fadeInUp    0.7s ease forwards; }
+        [data-aos="fade-right"] { animation: fadeInLeft  0.7s ease forwards; }
+        [data-aos="fade-left"]  { animation: fadeInRight 0.7s ease forwards; }
+        [data-aos="fade-down"]  { animation: fadeInUp    0.7s ease reverse forwards; }
+        [data-aos="zoom-in"]    { animation: zoomIn      0.7s ease forwards; }
+        /* Delay berdasarkan data-aos-delay attr tidak bisa dibaca di CSS, jadi beri delay dinamis */
+        [data-aos][data-aos-delay="100"] { animation-delay: 0.1s; }
+        [data-aos][data-aos-delay="200"] { animation-delay: 0.2s; }
+        [data-aos][data-aos-delay="300"] { animation-delay: 0.3s; }
+        [data-aos][data-aos-delay="400"] { animation-delay: 0.4s; }
+        [data-aos][data-aos-delay="500"] { animation-delay: 0.5s; }
+        /* Kelas aos-animate dari library lama — tidak berbahaya jika ada */
+        [data-aos].aos-animate  { opacity: 1 !important; transform: none !important; }
+
+        /* ===== FLOATING ===== */
+        .floating-element {
+            animation: floatAnim 4s ease-in-out infinite alternate;
+        }
+        @keyframes floatAnim {
+            0%   { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(3deg); }
+        }
+
+        /* ===== GLASS ===== */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.80);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+        .glass-panel-dark {
+            background: rgba(28, 49, 21, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===== MISC ===== */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .jadwal-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .jadwal-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+
+        .timeline-item { position: relative; padding-left: 2rem; }
+        .timeline-item::before { content: ''; position: absolute; left: 0.45rem; top: 1.5rem; bottom: -1rem; width: 2px; background: linear-gradient(to bottom, #a3c585, transparent); }
+        .timeline-item:last-child::before { display: none; }
+        .timeline-dot { position: absolute; left: 0; top: 0.35rem; width: 0.9rem; height: 0.9rem; border-radius: 50%; background: #e67e22; border: 2px solid #f0f8d3; box-shadow: 0 0 0 3px rgba(230,126,34,0.3); }
+
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .faq-answer.open { max-height: 300px; }
+        .faq-icon { transition: transform 0.3s ease; }
+        .faq-icon.rotated { transform: rotate(45deg); }
+
+        .modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+
+        .bg-pattern-dots { background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px); background-size: 20px 20px; }
+        .bg-pattern-lines { background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 0, transparent 50%); background-size: 16px 16px; }
+
+        /* ===== LOADING SCREEN ===== */
+        #loadingScreen {
+            position: fixed; inset: 0; background: #f0f8d3;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+        #loadingScreen.fade-out { opacity: 0; pointer-events: none; }
+        .loader-ring {
+            width: 48px; height: 48px; border: 4px solid #a3c585;
+            border-top-color: #2d4a22; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== FORM PPDB & SELECT FIX FOR MOBILE GAS IFRAME ===== */
+        .form-input {
+            width: 100%; border: 1.5px solid #d1d5db; border-radius: 12px;
+            padding: 10px 14px; font-size: 13px; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+        .form-input:focus { border-color: #e67e22; box-shadow: 0 0 0 3px rgba(230,126,34,0.15); }
+        .form-label { font-size: 11px; font-weight: 700; color: #4b5563; margin-bottom: 4px; display: block; }
+
+        /* Fix <select> dropdown on mobile WebKit/Android inside GAS iframe */
+        select.form-input, select.input-field, select {
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e67e22' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 14px center !important;
+            background-size: 18px 18px !important;
+            padding-right: 40px !important;
+            cursor: pointer !important;
+            touch-action: manipulation !important;
+            position: relative !important;
+            z-index: 30 !important;
+            color: #111827 !important;
+            background-color: #ffffff !important;
+        }
+        select option {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+            font-size: 1rem !important;
+            padding: 10px !important;
+        }
+
+        /* ===== TOAST ===== */
+        #toast {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: #2d4a22; color: white; padding: 10px 20px; border-radius: 999px;
+            font-size: 12px; font-weight: 600; opacity: 0; transition: all 0.3s ease; z-index: 9998;
+            pointer-events: none; white-space: nowrap;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast.error { background: #dc2626; }
+
+        /* ===== RESPONSIVE — GAS MOBILE (viewport 980px, < 1024px) ===== */
+        @media (max-width: 1023px) {
+            .slide-section { padding: 5rem 2rem 4rem; }
+            nav { padding: 0.5rem 1rem !important; }
+            #navLinks { display: none !important; }
+            #hamburgerBtn { display: flex !important; }
+            h1.font-title { font-size: 3.5rem !important; }
+            .floating-element { display: none; }
+
+            .form-input, .input-field, input, select, textarea {
+                font-size: 0.95rem !important;
+                padding: 12px 14px !important;
+                min-height: 46px !important;
+            }
+            .form-label, .label-xs, label {
+                font-size: 0.85rem !important;
+                margin-bottom: 5px !important;
+            }
+            button, .btn-action, .btn-save {
+                font-size: 0.9rem !important;
+                min-height: 46px !important;
+                padding: 10px 16px !important;
+            }
+
+            .text-\[9px\], .text-\[10px\], .text-\[11px\], .text-xs {
+                font-size: 0.88rem !important;
+                line-height: 1.4 !important;
+            }
+            .opacity-30, .opacity-50, .opacity-70 {
+                opacity: 0.85 !important;
+            }
+            footer p, footer a {
+                font-size: 0.85rem !important;
+            }
+
+            #loginModal > div {
+                width: 88% !important;
+                max-width: 850px !important;
+                padding: 2.2rem 1.8rem !important;
+                border-radius: 28px !important;
+            }
+
+            #mobileSidebarPanel {
+                width: 80% !important;
+                max-width: 340px !important;
+                min-width: 260px !important;
+                padding: 1.5rem 1.25rem !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            #mobileSidebarPanel .mobile-nav-link {
+                font-size: 0.875rem !important;
+                padding: 10px 14px !important;
+                margin-bottom: 4px !important;
+                border-radius: 12px !important;
+            }
+            #mobileSidebarPanel .mobile-nav-link i {
+                font-size: 1rem !important;
+                width: 1.4rem !important;
+            }
+            #mobileSidebarPanel button {
+                font-size: 0.85rem !important;
+                padding: 10px 14px !important;
+                min-height: 42px !important;
+                border-radius: 12px !important;
+            }
+            #mobileSidebarPanel img {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+            }
+            #mobileSidebarPanel .font-title {
+                font-size: 1rem !important;
+            }
+
+            #classPickerModal > div:last-child {
+                width: 88% !important;
+                max-width: 850px !important;
+                padding: 2.2rem 1.8rem !important;
+                border-radius: 28px !important;
+            }
+            #classPickerModal button {
+                font-size: 1rem !important;
+                padding: 16px 20px !important;
+                min-height: 54px !important;
+                border-radius: 18px !important;
+            }
+
+            .fixed.bottom-6 { bottom: 1.5rem; right: 1rem; }
+
+            #toast {
+                font-size: 0.95rem !important;
+                padding: 14px 22px !important;
+                border-radius: 18px !important;
+                max-width: 88vw !important;
+                white-space: normal !important;
+                text-align: center !important;
+                line-height: 1.4 !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #hamburgerBtn { display: none !important; }
+            #navLinks { display: flex !important; }
+        }
+
+        /* ===== DESKTOP & DESKTOP-SITE-MODE OVERRIDES ===== */
+        html.desktop-site-mode { font-size: 15px !important; }
+        html.desktop-site-mode #navLinks { display: flex !important; }
+        html.desktop-site-mode #hamburgerBtn { display: none !important; }
+        html.desktop-site-mode .floating-element { display: block !important; }
+        html.desktop-site-mode .slide-section { padding: 6rem 1.5rem 5rem !important; }
+
+        /* ===== NAVBAR DROPDOWN ===== */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-menu {
+            display: none;
+            position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            background: white; border-radius: 1rem; box-shadow: 0 12px 36px rgba(45,74,34,0.18);
+            border: 1.5px solid rgba(45,74,34,0.12); min-width: 220px; z-index: 300;
+            overflow: hidden; padding: 0.5rem 0;
+            /* Bridge gap between button and menu so hover doesn't break */
+            margin-top: 0;
+            padding-top: 0.5rem;
+        }
+        /* Invisible bridge fills gap between button and dropdown */
+        .nav-dropdown-menu::before {
+            content: ''; position: absolute; top: -12px; left: 0;
+            width: 100%; height: 12px; background: transparent;
+        }
+        /* Wrap button + menu in a hover zone using padding trick */
+        .nav-dropdown:hover .nav-dropdown-menu,
+        .nav-dropdown.open .nav-dropdown-menu { display: block; }
+        .nav-dropdown.open #navDropdownArrow,
+        .nav-dropdown:hover #navDropdownArrow { transform: rotate(180deg); }
+        .nav-dropdown-menu a {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 16px; font-size: 0.8rem; font-weight: 700;
+            color: #2d4a22; text-decoration: none; white-space: nowrap;
+            transition: background 0.15s, color 0.15s;
+        }
+        .nav-dropdown-menu a:hover { background: #f0f8d3; color: #e67e22; }
+        .nav-dropdown-menu .drop-divider { border-top: 1px solid rgba(45,74,34,0.08); margin: 0.3rem 0; }
+
+        /* ===== FLOATING LEFT ARTIKEL TAB ===== */
+        #floatingLeftArtikelBtn {
+            box-shadow: 4px 0 24px rgba(45,74,34,0.25);
+            transition: transform 0.25s ease, background-color 0.25s ease, padding 0.25s ease;
+        }
+        #floatingLeftArtikelBtn:hover {
+            transform: translateY(-50%) scale(1.04);
+        }
+
+        /* ===== ARTIKEL SIDEBAR ===== */
+        #artikelSidebarOverlay {
+            position: fixed; inset: 0; z-index: 100;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(2px);
+            display: none;
+            transition: opacity 0.3s;
+        }
+        #artikelSidebarPanel {
+            position: fixed; top: 0; left: 0; height: 100vh; height: 100dvh;
+            background: #1c3115; color: white;
+            width: 70vw; max-width: 680px;
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+            display: flex; flex-direction: column;
+            box-shadow: 8px 0 40px rgba(0,0,0,0.35);
+            overflow: hidden;
+            z-index: 101;
+        }
+        #artikelSidebarPanel.open { transform: translateX(0); }
+        .artikel-card {
+            background: rgba(255,255,255,0.06);
+            border-radius: 0.875rem; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.2s; cursor: pointer;
+        }
+        .artikel-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(230,126,34,0.4); }
+        .artikel-card-img {
+            width: 100%; height: 100px; object-fit: cover;
+            background: rgba(255,255,255,0.05);
+        }
+        @media (min-width: 768px) {
+            #artikelSidebarPanel {
+                width: 340px !important;
+                max-width: 380px !important;
+            }
+        }
+
+        /* ===== MOBILE SIDEBAR DRAWER (RIGHT) ===== */
+        #mobileSidebarOverlay {
+            position: fixed; inset: 0; z-index: 120;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(2px);
+            transition: opacity 0.3s;
+        }
+        #mobileSidebarPanel {
+            position: fixed; top: 0; right: 0; height: 100vh; height: 100dvh;
+            background: #1c3115; color: white;
+            width: 70vw !important; max-width: 680px !important;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            box-shadow: -8px 0 40px rgba(0,0,0,0.35);
+            overflow-y: auto;
+            z-index: 121;
+        }
+        #mobileSidebarPanel:not(.translate-x-full) {
+            transform: translateX(0) !important;
+        }
+        @media (min-width: 768px) {
+            #mobileSidebarPanel {
+                width: 340px !important;
+                max-width: 380px !important;
+            }
+        }
+    </style>
+    <script>
+        (function() {
+            // GAS MOBILE FIX:
+            // Google Apps Script memaksa viewport 980px pada mobile browser.
+            // Akibatnya window.innerWidth selalu ~980px di GAS, bukan lebar HP asli.
+            // Solusi: gunakan window.screen.width (lebar fisik layar dalam CSS pixel)
+            // yang TIDAK dipengaruhi oleh viewport GAS.
+            //
+            // iPhone 12 Pro normal  → screen.width = 390 → mobile-site-mode ✅
+            // HP mode Desktop       → UA berubah (hapus 'Mobile') → desktop-site-mode ✅
+            // Laptop / PC           → screen.width = 1280+ → desktop-site-mode ✅
+            function updateLayoutMode() {
+                var ua = navigator.userAgent;
+                var isMobileUA = /Mobile|Android|iPhone|iPod|IEMobile|Opera Mini/i.test(ua);
+                // screen.width = CSS pixel width fisik layar (tidak terpengaruh GAS)
+                var screenW = (window.screen && window.screen.width) ? window.screen.width : window.innerWidth;
+                var html = document.documentElement;
+
+                // HP normal: isMobileUA=true, screenW<768 → mobile
+                // HP Desktop Site: isMobileUA=false (Chrome hapus 'Mobile') → desktop
+                // Laptop/PC: isMobileUA=false → desktop
+                var isMobileDevice = isMobileUA && screenW < 768;
+
+                if (isMobileDevice) {
+                    html.classList.add('mobile-site-mode');
+                    html.classList.remove('desktop-site-mode');
+                } else {
+                    html.classList.add('desktop-site-mode');
+                    html.classList.remove('mobile-site-mode');
+                }
+            }
+            updateLayoutMode();
+            window.addEventListener('resize', updateLayoutMode);
+        })();
+    </script>
+
+</head>
+<body class="bg-[#f0f8d3]">
+
+<!-- ===== LOADING SCREEN ===== -->
+<div id="loadingScreen">
+    <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR" class="w-16 h-16 rounded-full object-cover shadow-lg mb-4">
+    <div class="loader-ring mb-3"></div>
+    <p class="text-xs text-sqr-green font-semibold">Memuat konten...</p>
+</div>
+
+<!-- ===== TOAST NOTIFIKASI ===== -->
+<div id="toast"></div>
+
+<!-- ===== FLOATING LEFT TRIGGER UNTUK SIDEBAR ARTIKEL ===== -->
+<button id="floatingLeftArtikelBtn" onclick="openArtikelSidebar()" 
+        class="fixed left-0 top-[35%] z-40 bg-sqr-green/95 hover:bg-sqr-dark text-white border-y border-r border-sqr-orange/60 shadow-xl rounded-r-xl py-2 px-1.5 sm:px-2 flex items-center gap-1.5 group transition-all duration-300 hover:pr-2.5 cursor-pointer backdrop-blur-sm"
+        title="Buka Artikel & Kegiatan SQR">
+    <i class="fa-solid fa-chevron-right text-sqr-orange text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
+    <i class="fa-solid fa-newspaper text-sqr-orange text-xs"></i>
+    <span class="font-title font-bold text-[9px] tracking-wider text-white uppercase hidden sm:inline">Artikel</span>
+</button>
+
+<!-- ===== FIXED NAVIGATION BAR ===== -->
+<nav class="fixed top-0 w-full z-50 glass-panel shadow-md px-3 sm:px-6 md:px-8 py-2.5 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+    <!-- Brand Logo & Title -->
+    <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+        <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover shadow-md">
+        <div class="flex flex-col leading-tight">
+            <span class="font-title text-sqr-green font-extrabold text-xs sm:text-base leading-none">Saung Quran</span>
+            <span class="font-title text-sqr-orange font-extrabold text-[10px] sm:text-xs leading-none tracking-wider mt-0.5">Rabbani</span>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation Links (centered in middle column) -->
+    <div class="hidden sm:flex items-center justify-center gap-2.5" id="navLinks">
+        <!-- Dropdown: Halaman di index -->
+        <div class="nav-dropdown relative" id="navDropdownContainer">
+            <button type="button" onclick="toggleNavDropdown(event)"
+                    class="nav-btn bg-white hover:bg-sqr-bg text-sqr-green text-xs px-4 py-2 rounded-full font-bold shadow-sm whitespace-nowrap border border-sqr-green/20 flex items-center gap-2 transition cursor-pointer">
+                <i class="fa-solid fa-layer-group text-sqr-orange text-xs"></i>
+                <span>Halaman Utama</span>
+                <i class="fa-solid fa-chevron-down text-[10px] opacity-70 transition-transform duration-200" id="navDropdownArrow"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="navDropdownMenu">
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-ppdb')"><i class="fa-solid fa-graduation-cap text-sqr-orange text-xs w-4"></i> PPDB Santri Baru</a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-sanlat')"><i class="fa-solid fa-star-and-crescent text-sqr-orange text-xs w-4"></i> Sanlat Ramadhan</a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-jadwal')"><i class="fa-solid fa-calendar-days text-sqr-orange text-xs w-4"></i> Jadwal Pengajian</a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-kajian')"><i class="fa-solid fa-video text-sqr-orange text-xs w-4"></i> Kajian Tematik</a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-berbagi')"><i class="fa-solid fa-hand-holding-heart text-sqr-orange text-xs w-4"></i> SQR Berbagi</a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-faq')"><i class="fa-solid fa-circle-question text-sqr-orange text-xs w-4"></i> Pertanyaan (FAQ)</a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-laporan')"><i class="fa-solid fa-chart-pie text-sqr-orange text-xs w-4"></i> Laporan Keuangan</a>
+            </div>
+        </div>
+        <!-- Link ke halaman baru -->
+        <a href="javascript:void(0)" onclick="goToPage('lokasi')" class="nav-btn bg-white hover:bg-sqr-bg text-sqr-green text-xs px-4 py-2 rounded-full font-bold shadow-sm whitespace-nowrap border border-sqr-green/20 cursor-pointer flex items-center gap-2 transition">
+            <i class="fa-solid fa-location-dot text-sqr-orange text-xs"></i> Lokasi
+        </a>
+        <a href="javascript:void(0)" onclick="goToPage('kontak')" class="nav-btn bg-white hover:bg-sqr-bg text-sqr-green text-xs px-4 py-2 rounded-full font-bold shadow-sm whitespace-nowrap border border-sqr-green/20 cursor-pointer flex items-center gap-2 transition">
+            <i class="fa-solid fa-envelope text-sqr-orange text-xs"></i> Kontak
+        </a>
+        <a href="javascript:void(0)" onclick="goToPage('struktur')" class="nav-btn bg-white hover:bg-sqr-bg text-sqr-green text-xs px-4 py-2 rounded-full font-bold shadow-sm whitespace-nowrap border border-sqr-green/20 cursor-pointer flex items-center gap-2 transition">
+            <i class="fa-solid fa-sitemap text-sqr-orange text-xs"></i> Pengurus
+        </a>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-2 shrink-0 justify-end">
+        <button onclick="openLoginModal()" class="bg-sqr-orange hover:bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-right-to-bracket"></i> <span>Login</span>
+        </button>
+        <!-- Hamburger Button (Mobile only, tersembunyi di sm:1024px+) -->
+        <button id="hamburgerBtn" onclick="toggleMobileSidebar()" class="sm:hidden bg-sqr-green text-white px-3.5 py-2 rounded-xl shadow-md hover:bg-green-900 transition flex items-center justify-center gap-1.5 font-bold text-xs">
+            <i class="fa-solid fa-bars text-sm"></i>
+            <span>Menu</span>
+        </button>
+    </div>
+</nav>
+
+<!-- ===== MOBILE SIDEBAR DRAWER ===== -->
+<div id="mobileSidebarOverlay" class="hidden transition-opacity duration-300">
+    <!-- Backdrop -->
+    <div onclick="toggleMobileSidebar()" class="absolute inset-0"></div>
+    
+    <!-- Drawer Panel -->
+    <div id="mobileSidebarPanel" class="p-5 shadow-2xl flex flex-col justify-between transform transition-transform duration-300 translate-x-full">
+        <div>
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+                <div class="flex items-center gap-2.5">
+                    <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR" class="w-10 h-10 rounded-full object-cover shadow-md">
+                    <div>
+                        <p class="font-title font-bold text-sm text-sqr-bg">Saung Quran</p>
+                        <p class="text-[10px] text-sqr-orange font-semibold">Rabbani</p>
+                    </div>
+                </div>
+                <button onclick="toggleMobileSidebar()" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/20 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Menu Navigation Links -->
+            <div class="space-y-2" id="mobileNavLinks">
+                <!-- Section di halaman ini -->
+                <p class="text-[10px] font-bold uppercase tracking-widest text-white/40 px-4 mb-1">Halaman ini</p>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-ppdb'); toggleMobileSidebar()" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition">
+                    <i class="fa-solid fa-graduation-cap text-sqr-orange text-base w-5"></i> <span>PPDB Santri Baru</span>
+                </a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-sanlat'); toggleMobileSidebar()" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition">
+                    <i class="fa-solid fa-star-and-crescent text-sqr-orange text-base w-5"></i> <span>Sanlat Ramadhan</span>
+                </a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-jadwal'); toggleMobileSidebar()" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition">
+                    <i class="fa-solid fa-calendar-days text-sqr-orange text-base w-5"></i> <span>Jadwal Pengajian</span>
+                </a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-kajian'); toggleMobileSidebar()" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition">
+                    <i class="fa-solid fa-video text-sqr-orange text-base w-5"></i> <span>Kajian Tematik</span>
+                </a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-berbagi'); toggleMobileSidebar()" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition">
+                    <i class="fa-solid fa-hand-holding-heart text-sqr-orange text-base w-5"></i> <span>SQR Berbagi</span>
+                </a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-faq'); toggleMobileSidebar()" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition">
+                    <i class="fa-solid fa-circle-question text-sqr-orange text-base w-5"></i> <span>Pertanyaan (FAQ)</span>
+                </a>
+                <a href="javascript:void(0)" onclick="scrollToSection('slide-laporan'); toggleMobileSidebar()" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition">
+                    <i class="fa-solid fa-chart-pie text-sqr-orange text-base w-5"></i> <span>Laporan Keuangan</span>
+                </a>
+                <!-- Halaman terpisah -->
+                <div class="border-t border-white/10 my-2"></div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-white/40 px-4 mb-1">Halaman Lainnya</p>
+                <a href="javascript:void(0)" onclick="toggleMobileSidebar(); goToPage('lokasi')" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition cursor-pointer">
+                    <i class="fa-solid fa-location-dot text-sqr-orange text-base w-5"></i> <span>Lokasi Pengajian</span>
+                </a>
+                <a href="javascript:void(0)" onclick="toggleMobileSidebar(); goToPage('kontak')" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition cursor-pointer">
+                    <i class="fa-solid fa-envelope text-sqr-orange text-base w-5"></i> <span>Kontak SQR</span>
+                </a>
+                <a href="javascript:void(0)" onclick="toggleMobileSidebar(); goToPage('struktur')" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition cursor-pointer">
+                    <i class="fa-solid fa-sitemap text-sqr-orange text-base w-5"></i> <span>Struktur Pengurus</span>
+                </a>
+                <a onclick="toggleMobileSidebar(); openArtikelSidebar()" class="mobile-nav-link flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-bold text-gray-200 hover:bg-sqr-green hover:text-white transition cursor-pointer">
+                    <i class="fa-solid fa-newspaper text-sqr-orange text-base w-5"></i> <span>Artikel & Kegiatan</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="border-t border-white/10 pt-4 mt-6">
+            <button onclick="toggleMobileSidebar(); openLoginModal();" class="w-full bg-sqr-orange hover:bg-orange-600 text-white font-bold py-3 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
+                <i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard
+            </button>
+            <p class="text-[10px] text-center text-gray-400 mt-3">&copy; 2026 Saung Quran Rabbani</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ARTIKEL SIDEBAR PANEL ===== -->
+<div id="artikelSidebarOverlay">
+    <!-- Backdrop -->
+    <div onclick="closeArtikelSidebar()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <!-- Panel -->
+    <div id="artikelSidebarPanel" class="relative z-10">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-sqr-dark/80">
+            <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-newspaper text-sqr-orange text-base"></i>
+                <div>
+                    <p class="font-title font-bold text-sm text-white leading-none">Artikel & Kegiatan</p>
+                    <p class="text-[10px] text-sqr-light-green">Saung Quran Rabbani</p>
+                </div>
+            </div>
+            <button onclick="closeArtikelSidebar()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="px-4 py-3 border-b border-white/10">
+            <div class="relative">
+                <input type="text" id="artikelSearch" placeholder="Cari artikel..." onkeyup="filterArtikel()"
+                    class="w-full bg-white/10 border border-white/20 text-white placeholder-white/40 text-xs rounded-xl px-4 py-2.5 outline-none focus:border-sqr-orange/60 pr-8">
+                <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
+            </div>
+        </div>
+
+        <!-- Artikel List -->
+        <div class="flex-1 overflow-y-auto px-4 py-3 space-y-3" id="artikelList" style="-webkit-overflow-scrolling:touch;">
+            <!-- Loading state -->
+            <div id="artikelLoading" class="text-center py-8">
+                <i class="fa-solid fa-spinner fa-spin text-sqr-orange text-xl mb-2"></i>
+                <p class="text-white/50 text-xs">Memuat artikel...</p>
+            </div>
+        </div>
+
+        <!-- Footer: Show All + Pagination -->
+        <div id="artikelFooter" class="hidden border-t border-white/10 px-4 py-3 bg-sqr-dark/80">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] text-white/50" id="artikelPaginasiInfo"></span>
+                <button onclick="loadArtikel(currentArtikelPage + 1)" id="artikelLoadMore"
+                    class="hidden text-sqr-orange font-bold text-xs hover:underline flex items-center gap-1">
+                    Lihat Lebih Banyak <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                </button>
+            </div>
+            <div class="flex gap-2 justify-center" id="artikelPagination"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL LOGIN ===== -->
+<div id="loginModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] hidden transition-all modal">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 sm:p-8 relative mx-4 animate__animated animate__zoomIn">
+        <button onclick="closeLoginModal()" class="absolute top-3.5 right-3.5 text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-times text-lg"></i></button>
+        <div class="text-center mb-5">
+            <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR" class="w-12 h-12 rounded-full object-cover mx-auto mb-2 shadow-md">
+            <h2 class="font-title text-xl font-black text-sqr-green">Login SQR</h2>
+            <p class="text-[11px] text-gray-500 mt-0.5">Akses dashboard ustadz, wali, atau admin</p>
+        </div>
+        <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl p-2.5 mb-3"></div>
+        <div class="mb-3.5">
+            <label class="form-label">Email</label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="email@example.com">
+        </div>
+        <div class="mb-5">
+            <label class="form-label">Password</label>
+            <div class="relative">
+                <input type="password" id="loginPassword" class="form-input pr-10" placeholder="••••••••">
+                <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-eye text-sm" id="eyeIcon"></i>
+                </button>
+            </div>
+        </div>
+        <button id="loginBtn" onclick="doLogin()" class="w-full bg-sqr-green hover:bg-green-900 text-white font-bold py-2.5 rounded-xl transition shadow-md flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard
+        </button>
+        <p class="text-center text-[11px] text-gray-500 mt-4 leading-normal">
+            Belum punya akun? <a href="https://wa.me/6281293721163?text=Halo%20Admin%20SQR%2C%20saya%20butuh%20bantuan%20pembuatan%20akun" target="_blank" class="text-sqr-orange font-bold hover:underline inline-flex items-center gap-1"><i class="fa-brands fa-whatsapp text-xs"></i> Hubungi admin SQR via WhatsApp</a>
+        </p>
+    </div>
+</div>
+
+<!-- ===== CUSTOM CLASS PICKER MODAL (100% Mobile iframe proof) ===== -->
+<div id="classPickerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150] hidden items-center justify-center p-4">
+    <div onclick="closeClassPicker()" class="absolute inset-0"></div>
+    <div class="bg-white rounded-3xl p-6 w-full max-w-sm relative z-10 shadow-2xl border border-gray-100 animate__animated animate__fadeInUp">
+        <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <h3 class="font-title font-bold text-base text-sqr-green">Pilih Kelas yang Diminati</h3>
+            <button type="button" onclick="closeClassPicker()" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-times text-lg"></i></button>
+        </div>
+        <div class="space-y-2.5">
+            <button type="button" onclick="selectClassOption('', '-- Pilih Kelas --')" class="w-full text-left p-3.5 rounded-2xl border border-gray-100 hover:bg-sqr-bg font-medium text-sm flex justify-between items-center text-gray-500 transition">
+                <span>-- Pilih Kelas --</span>
+            </button>
+            <button type="button" onclick="selectClassOption('Anak (5–12 tahun)', 'Kelas Anak (5–12 tahun)')" class="w-full text-left p-3.5 rounded-2xl border border-sqr-green/20 hover:bg-sqr-bg font-bold text-sm flex justify-between items-center text-sqr-green transition">
+                <span><i class="fa-solid fa-child text-sqr-orange mr-2 text-base"></i>Kelas Anak (5–12 tahun)</span>
+            </button>
+            <button type="button" onclick="selectClassOption('Remaja (13–17 tahun)', 'Kelas Remaja (13–17 tahun)')" class="w-full text-left p-3.5 rounded-2xl border border-sqr-green/20 hover:bg-sqr-bg font-bold text-sm flex justify-between items-center text-sqr-green transition">
+                <span><i class="fa-solid fa-person text-sqr-green mr-2 text-base"></i>Kelas Remaja (13–17 tahun)</span>
+            </button>
+            <button type="button" onclick="selectClassOption('Dewasa (18+ tahun)', 'Kelas Dewasa (18+ tahun)')" class="w-full text-left p-3.5 rounded-2xl border border-sqr-green/20 hover:bg-sqr-bg font-bold text-sm flex justify-between items-center text-sqr-green transition">
+                <span><i class="fa-solid fa-person-cane text-sqr-light-green mr-2 text-base"></i>Kelas Dewasa (18+ tahun)</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== FLOATING NAV CONTROLLER ===== -->
+<div class="fixed bottom-6 right-4 z-50 flex flex-col gap-2 shadow-xl rounded-2xl bg-white p-2 border border-gray-100">
+    <button onclick="navigateSlide(-1)" class="w-10 h-10 bg-sqr-green text-white rounded-xl hover:bg-sqr-orange transition active:scale-95"><i class="fa-solid fa-chevron-up text-sm"></i></button>
+    <div id="slide-counter" class="text-center text-[10px] font-bold text-sqr-green">1/7</div>
+    <button onclick="navigateSlide(1)"  class="w-10 h-10 bg-sqr-green text-white rounded-xl hover:bg-sqr-orange transition active:scale-95"><i class="fa-solid fa-chevron-down text-sm"></i></button>
+</div>
+
+<!-- ==================== SLIDE 1: PPDB ==================== -->
+<section id="slide-ppdb" class="slide-section border-b-4 border-dashed border-sqr-light-green" style="position:relative; overflow:hidden; padding:0;">
+
+    <!-- ===== VIDEO BACKGROUND CLOUDINARY ===== -->
+    <video
+        autoplay muted loop playsinline
+        id="ppdbBgVideo"
+        style="
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            object-fit: cover;
+            z-index: 0;
+            pointer-events: none;
+        "
+    >
+        <source src="https://res.cloudinary.com/ddh5nkwv7/video/upload/v1782638338/sample_ztpd9h.mp4" type="video/mp4">
+    </video>
+
+    <!-- Overlay gradient gelap supaya teks terbaca -->
+    <div style="
+        position: absolute; inset: 0; z-index: 1; pointer-events: none;
+        background: linear-gradient(
+            135deg,
+            rgba(28,49,21,0.85) 0%,
+            rgba(28,49,21,0.65) 50%,
+            rgba(44,74,34,0.80) 100%
+        );
+    "></div>
+
+    <!-- Floating dekoratif -->
+    <div class="absolute top-20 left-6 text-white/10 text-8xl floating-element pointer-events-none" style="z-index:2;"><i class="fa-solid fa-cloud"></i></div>
+    <div class="absolute bottom-20 right-6 text-sqr-orange/20 text-9xl floating-element pointer-events-none" style="animation-delay:1s; z-index:2;"><i class="fa-solid fa-sun"></i></div>
+
+    <!-- ===== KONTEN ===== -->
+    <div class="max-w-5xl w-full grid md:grid-cols-12 gap-8 items-center" style="position:relative; z-index:3; padding: 6rem 1.5rem 5rem;">
+
+        <!-- Kiri: Hero -->
+        <div class="md:col-span-5 text-center md:text-left" data-aos="fade-right">
+            <h1 class="font-title text-5xl md:text-6xl font-black text-sqr-orange mt-4 tracking-tight">PPDB</h1>
+            <p class="font-title text-xl md:text-2xl font-bold text-white -mt-1" id="home_tagline">Saung Quran Rabbani</p>
+            <div class="bg-sqr-orange text-white font-title text-sm inline-block px-4 py-1 rounded-md mt-2 font-bold">
+                Tahun Ajaran 2025/2026
+            </div>
+
+            <!-- Stats -->
+            <div class="flex gap-4 mt-5 justify-center md:justify-start">
+                <div class="text-center">
+                    <p class="font-title font-black text-2xl text-sqr-orange" id="stat_total_santri">150+</p>
+                    <p class="text-[10px] text-white/70">Santri Aktif</p>
+                </div>
+                <div class="w-px bg-white/20"></div>
+                <div class="text-center">
+                    <p class="font-title font-black text-2xl text-sqr-orange" id="stat_pengajar">8+</p>
+                    <p class="text-[10px] text-white/70">Pengajar</p>
+                </div>
+                <div class="w-px bg-white/20"></div>
+                <div class="text-center">
+                    <p class="font-title font-black text-2xl text-sqr-orange" id="stat_tahun">7th</p>
+                    <p class="text-[10px] text-white/70">Tahun Berdiri</p>
+                </div>
+            </div>
+
+            <div class="mt-6 space-y-3">
+                <a id="whatsappLink" href="https://wa.me/6289677082002" target="_blank"
+                   class="relative inline-flex items-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-title font-bold text-sm px-6 py-3.5 rounded-full shadow-xl transition-all transform hover:-translate-y-1 w-full sm:w-auto justify-center animate__animated animate__pulse animate__infinite">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> DAFTAR JADI SANTRI BARU
+                </a>
+                <p class="text-[11px] text-white/60 italic">Klik tombol di atas untuk langsung terhubung via WhatsApp resmi kami.</p>
+            </div>
+        </div>
+
+        <!-- Kanan: Cards -->
+        <div class="md:col-span-7 grid sm:grid-cols-2 gap-4">
+
+            <!-- Keunggulan -->
+            <div class="bg-white/10 backdrop-blur-md text-white p-6 rounded-[28px] shadow-xl jadwal-card border border-white/20" data-aos="zoom-in">
+                <h3 class="font-title font-bold text-base text-sqr-bg mb-3">
+                    <i class="fa-solid fa-award mr-2 text-sqr-orange"></i>Keunggulan SQR
+                </h3>
+                <ul id="keunggulanList" class="text-xs space-y-2 opacity-90 leading-relaxed"></ul>
+            </div>
+
+            <!-- Profil Pengajar -->
+            <div class="bg-white/10 backdrop-blur-md text-white p-6 rounded-[28px] shadow-xl border border-white/20 jadwal-card" data-aos="zoom-in" data-aos-delay="100">
+                <h3 class="font-title font-bold text-base text-sqr-bg mb-3">
+                    <i class="fa-solid fa-graduation-cap mr-2 text-sqr-orange"></i>Profil Pengajar
+                </h3>
+                <ul class="text-xs space-y-2 text-white/80 font-medium">
+                    <li class="flex gap-2"><i class="fa-solid fa-circle-dot text-sqr-light-green"></i> Mahasiswa LIPIA & IOU</li>
+                    <li class="flex gap-2"><i class="fa-solid fa-circle-dot text-sqr-light-green"></i> Alumni Pesantren Babussalam</li>
+                    <li class="flex gap-2"><i class="fa-solid fa-circle-dot text-sqr-light-green"></i> Alumni Pesantren Al Wafa</li>
+                </ul>
+            </div>
+
+            <!-- Form PPDB -->
+            <div class="sm:col-span-2 bg-white p-6 rounded-[28px] shadow-xl border-l-8 border-sqr-orange" style="position:relative; z-index:20;">
+                <h3 class="font-title font-bold text-sm text-sqr-green mb-1">
+                    <i class="fa-solid fa-file-signature text-sqr-orange mr-2"></i>Formulir Pendaftaran Santri Baru
+                </h3>
+                <p class="text-[10px] text-gray-400 mb-4">Isi data di bawah, kami akan menghubungi via WhatsApp</p>
+                <div class="grid grid-cols-2 gap-3" id="ppdbForm">
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="form-label">Nama Lengkap Santri *</label>
+                        <input type="text" id="f_nama" class="form-input" placeholder="Nama lengkap">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="form-label">Usia *</label>
+                        <input type="number" id="f_usia" class="form-input" placeholder="Contoh: 8" min="4" max="60">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="form-label">Nama Orang Tua / Wali *</label>
+                        <input type="text" id="f_ortu" class="form-input" placeholder="Nama ayah/ibu/wali">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="form-label">Nomor WhatsApp *</label>
+                        <input type="tel" id="f_wa" class="form-input" placeholder="08xxxxxxxxxx">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="form-label">Kelas yang Diminati</label>
+                        <!-- Hidden select to preserve JS compatibility for submitPPDB() -->
+                        <select id="f_kelas" class="hidden">
+                            <option value="">-- Pilih Kelas --</option>
+                            <option value="Anak (5–12 tahun)">Kelas Anak (5–12 tahun)</option>
+                            <option value="Remaja (13–17 tahun)">Kelas Remaja (13–17 tahun)</option>
+                            <option value="Dewasa (18+ tahun)">Kelas Dewasa (18+ tahun)</option>
+                        </select>
+                        
+                        <!-- Custom Class Picker Trigger Button (100% Mobile & Desktop Proof) -->
+                        <button type="button" onclick="openClassPicker()" id="classPickerTrigger" class="form-input flex items-center justify-between text-left text-gray-700 bg-white font-medium cursor-pointer">
+                            <span id="classPickerLabel">-- Pilih Kelas --</span>
+                            <i class="fa-solid fa-chevron-down text-sqr-orange text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="col-span-2">
+                        <button id="submitPpdbBtn" onclick="submitPPDB()"
+                            class="w-full bg-sqr-green hover:bg-green-900 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-paper-plane"></i> Kirim Pendaftaran
+                        </button>
+                    </div>
+                </div>
+                <div id="ppdbSuccess" class="hidden text-center py-4">
+                    <i class="fa-solid fa-circle-check text-4xl text-green-500 mb-2"></i>
+                    <p class="font-bold text-sqr-green">Pendaftaran Terkirim!</p>
+                    <p class="text-xs text-gray-500 mt-1">Admin SQR akan menghubungi Anda segera via WhatsApp.</p>
+                </div>
+            </div>
+
+            <!-- Syarat -->
+            <div class="sm:col-span-2 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-[11px] text-white/80" data-aos="fade-up">
+                <p class="font-bold text-white mb-2">
+                    <i class="fa-solid fa-circle-info text-sqr-orange mr-1"></i>Syarat Pendaftaran
+                </p>
+                <div class="grid grid-cols-2 gap-2">
+                    <p class="flex gap-1.5"><span class="bg-sqr-orange text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold shrink-0">1</span> Muslim/ah, min. usia 5 tahun</p>
+                    <p class="flex gap-1.5"><span class="bg-sqr-orange text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold shrink-0">2</span> Bersedia taat aturan & tertib</p>
+                    <p class="flex gap-1.5"><span class="bg-sqr-orange text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold shrink-0">3</span> Biaya pendaftaran Rp 150.000</p>
+                    <p class="flex gap-1.5"><span class="bg-sqr-orange text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold shrink-0">4</span> Isi formulir di atas atau via WA</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 2: SANLAT ==================== -->
+<section id="slide-sanlat" class="slide-section bg-sqr-green text-white bg-pattern-dots">
+    <div class="max-w-5xl w-full grid md:grid-cols-2 gap-8 items-center z-10">
+        <div data-aos="fade-right">
+            <h2 class="font-title text-4xl md:text-5xl font-black text-sqr-bg mt-4" id="sanlat_title">YOOK GASS IKUT!!</h2>
+            <p class="text-base italic font-bold text-sqr-light-green mt-2" id="sanlat_subtitle">"Ramadhan Ceria Ala Para Ulama"</p>
+            <div class="mt-5 bg-white/10 p-5 rounded-3xl border border-white/20">
+                <p class="text-xs font-bold text-sqr-orange mb-1"><i class="fa-solid fa-user-tie mr-1"></i> Bersama Pemateri:</p>
+                <p class="text-base font-bold" id="sanlat_pemateri">Ust. Raisya Rahman Aspian</p>
+                <p class="text-xs opacity-70" id="sanlat_pemateri_desc">Mahasiswa Jurusan Sastra Arab LIPIA Jakarta</p>
+            </div>
+            <div class="mt-4 flex gap-3 flex-wrap">
+                <div class="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl text-xs font-bold" id="sanlat_target">
+                    <i class="fa-solid fa-child text-sqr-orange"></i> Usia 7–15 tahun
+                </div>
+                <div class="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl text-xs font-bold">
+                    <i class="fa-solid fa-users text-sqr-orange"></i> Umum & Santri SQR
+                </div>
+            </div>
+        </div>
+        <div class="space-y-4" data-aos="zoom-in">
+            <div class="bg-white text-sqr-green p-6 rounded-[28px] shadow-2xl">
+                <h4 class="font-title font-bold text-sm border-b pb-2 mb-4 text-sqr-orange"><i class="fa-solid fa-star-and-crescent mr-1"></i> Rangkaian Kegiatan Sanlat</h4>
+                <div id="sanlatKegiatanList" class="grid grid-cols-2 gap-2 text-xs font-semibold text-sqr-dark"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-sqr-orange p-4 rounded-2xl text-center shadow-lg">
+                    <p class="text-[9px] uppercase tracking-wider font-bold opacity-80 mb-1"><i class="fa-solid fa-calendar-day mr-1"></i>Waktu & Tempat</p>
+                    <p class="text-xs font-bold leading-relaxed" id="sanlat_waktu">Sabtu, 7 Maret 2026<br>10.00 – 17.30 WIB<br>SQR Pusat</p>
+                </div>
+                <div class="bg-white text-sqr-green p-4 rounded-2xl text-center shadow-lg flex flex-col justify-center">
+                    <p class="text-[9px] uppercase tracking-wider font-bold text-gray-400 mb-1"><i class="fa-solid fa-hand-holding-dollar mr-1"></i>Infaq Sanlat</p>
+                    <p class="text-xs font-bold">Umum: <span id="sanlat_harga_umum" class="text-sqr-orange text-base font-black">35rb</span></p>
+                    <p class="text-xs font-bold">Santri: <span id="sanlat_harga_santri" class="text-sqr-orange text-base font-black">15rb</span></p>
+                </div>
+            </div>
+            <a id="sanlatWhatsappLink" href="https://wa.me/6289677082002" target="_blank"
+               class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-2xl transition shadow-lg">
+                <i class="fa-brands fa-whatsapp text-base"></i> Daftar Sanlat via WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 3: JADWAL ==================== -->
+<section id="slide-jadwal" class="slide-section border-b-4 border-dashed border-sqr-green/30">
+    <div class="max-w-5xl w-full z-10">
+        <div class="text-center mb-8" data-aos="fade-down">
+            <h2 class="font-title text-2xl md:text-3xl font-black text-sqr-green mt-4">Jadwal & Program Belajar SQR</h2>
+            <p class="text-sm text-gray-500 mt-1">Kelas tersedia untuk semua usia — dari anak-anak hingga dewasa</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5" data-aos="fade-up">
+            <!-- Kelas Anak -->
+            <div class="glass-panel rounded-[28px] p-5 shadow-lg jadwal-card border-t-4 border-sqr-orange">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-sqr-orange/10 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-child text-sqr-orange text-xl"></i></div>
+                    <div><h3 class="font-title font-bold text-sm text-sqr-green">Kelas Anak</h3><p class="text-[10px] text-gray-400">Usia 5–12 tahun</p></div>
+                </div>
+                <div id="jadwalAnak" class="space-y-2 text-xs"></div>
+                <div class="mt-4 pt-3 border-t border-gray-100 text-[10px] text-gray-500 space-y-1">
+                    <p><i class="fa-solid fa-book-open mr-1 text-sqr-orange"></i> Materi: Iqro / Jilid UMMI + Tajwid Dasar</p>
+                    <p><i class="fa-solid fa-memo-circle-check mr-1 text-sqr-orange"></i> Hafalan: Juz Amma & Doa Harian</p>
+                </div>
+            </div>
+            <!-- Kelas Remaja -->
+            <div class="glass-panel rounded-[28px] p-5 shadow-lg jadwal-card border-t-4 border-sqr-green relative">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-sqr-green text-white text-[9px] font-bold px-3 py-0.5 rounded-full">POPULER</div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-sqr-green/10 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-person text-sqr-green text-xl"></i></div>
+                    <div><h3 class="font-title font-bold text-sm text-sqr-green">Kelas Remaja</h3><p class="text-[10px] text-gray-400">Usia 13–17 tahun</p></div>
+                </div>
+                <div id="jadwalRemaja" class="space-y-2 text-xs"></div>
+                <div class="mt-4 pt-3 border-t border-gray-100 text-[10px] text-gray-500 space-y-1">
+                    <p><i class="fa-solid fa-book-open mr-1 text-sqr-orange"></i> Materi: Al-Quran + Tajwid Lanjutan</p>
+                    <p><i class="fa-solid fa-memo-circle-check mr-1 text-sqr-orange"></i> Hafalan: Juz 29–30 + Surah Pilihan</p>
+                </div>
+            </div>
+            <!-- Kelas Dewasa -->
+            <div class="glass-panel rounded-[28px] p-5 shadow-lg jadwal-card border-t-4 border-sqr-light-green">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-sqr-light-green/20 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-person-cane text-sqr-light-green text-xl"></i></div>
+                    <div><h3 class="font-title font-bold text-sm text-sqr-green">Kelas Dewasa</h3><p class="text-[10px] text-gray-400">18 tahun ke atas</p></div>
+                </div>
+                <div id="jadwalDewasa" class="space-y-2 text-xs"></div>
+                <div class="mt-4 pt-3 border-t border-gray-100 text-[10px] text-gray-500 space-y-1">
+                    <p><i class="fa-solid fa-book-open mr-1 text-sqr-orange"></i> Materi: Tahsin Al-Quran + Tajwid</p>
+                    <p><i class="fa-solid fa-memo-circle-check mr-1 text-sqr-orange"></i> Khusus: Kajian Fiqih & Tafsir</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-6 grid sm:grid-cols-3 gap-3" data-aos="fade-up">
+            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-sqr-green/10">
+                <p class="text-[10px] text-gray-400">Biaya Pendaftaran</p>
+                <p class="font-title font-black text-sqr-orange text-lg">Rp 150.000</p>
+                <p class="text-[10px] text-gray-400">Sekali bayar</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-sqr-green/10">
+                <p class="text-[10px] text-gray-400">SPP Bulanan</p>
+                <p class="font-title font-black text-sqr-orange text-lg" id="biaya_spp">Rp 100.000</p>
+                <p class="text-[10px] text-gray-400">Per bulan</p>
+            </div>
+            <div class="bg-sqr-green text-white rounded-2xl p-4 text-center">
+                <p class="text-[10px] opacity-70">Lokasi</p>
+                <p class="font-title font-black text-sqr-bg text-sm">SQR Pusat</p>
+                <p class="text-[10px] opacity-70">Hubungi WA untuk alamat lengkap</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 4: KAJIAN ==================== -->
+<section id="slide-kajian" class="slide-section bg-sqr-dark text-white bg-pattern-lines">
+    <div class="absolute inset-0 bg-gradient-to-br from-sqr-dark via-sqr-green/40 to-black pointer-events-none"></div>
+    <div class="max-w-5xl w-full z-10 grid md:grid-cols-12 gap-8 items-start">
+        <div class="md:col-span-6 space-y-5" data-aos="fade-right">
+            <h2 class="font-title text-3xl md:text-4xl font-black text-sqr-bg">Mengapa Memilih<br>Belajar Al-Quran<br><span class="text-sqr-orange">di SQR?</span></h2>
+            <p class="text-xs text-gray-300" id="mengapa_sqr">Saung Quran Rabbani (SQR) dikelola di bawah Yayasan Bina Cahaya Ilmu Rabbani.</p>
+            <div class="space-y-3 pt-2">
+                <p class="text-[10px] uppercase tracking-widest text-sqr-light-green">Milestone SQR</p>
+                <div id="timelineMilestones"></div>
+            </div>
+        </div>
+        <div class="md:col-span-6 space-y-4" data-aos="fade-left">
+            <div class="glass-panel-dark p-6 rounded-[36px] shadow-2xl border border-white/10">
+                <span class="bg-sqr-orange text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Kajian Islam Tematik Online</span>
+                <h3 class="font-title text-lg md:text-xl font-extrabold text-white mt-4" id="kajian_judul">"Hidayah Bukan Di Tangan Kita"</h3>
+                <div class="space-y-2.5 mt-3 text-left bg-white/5 p-4 rounded-2xl text-xs">
+                    <p><i class="fa-solid fa-user text-sqr-orange mr-2"></i><b>Pemateri:</b> <span id="kajian_pemateri">Ustaz Hendri</span></p>
+                    <p><i class="fa-solid fa-calendar-days text-sqr-orange mr-2"></i><b>Waktu:</b> <span id="kajian_waktu">Jumat, 16 Mei 2025 · 19.30 WIB</span></p>
+                    <p><i class="fa-solid fa-video text-sqr-orange mr-2"></i><b>Media:</b> <span id="kajian_media">Google Meet</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 5: BERBAGI ==================== -->
+<section id="slide-berbagi" class="slide-section bg-[#f7fce8] border-b-4 border-dashed border-sqr-orange">
+    <div class="max-w-5xl w-full z-10 text-center">
+        <h2 class="font-title text-2xl md:text-3xl font-black text-sqr-green mt-2">SQR Berbagi Bersama</h2>
+        <div class="grid md:grid-cols-2 gap-6 mt-6">
+            <div class="glass-panel p-6 rounded-[28px] shadow-xl jadwal-card" data-aos="zoom-in">
+                <i class="fa-solid fa-calendar-week text-sqr-orange text-3xl"></i>
+                <h3 class="font-bold mt-2">Jumat Berbagi</h3>
+                <p class="text-xs mt-2" id="jumat_berbagi_desc">Setiap Jumat, infaq makanan diantarkan ke SQR</p>
+            </div>
+            <div class="glass-panel p-6 rounded-[28px] shadow-xl jadwal-card" data-aos="zoom-in" data-aos-delay="100">
+                <i class="fa-solid fa-moon text-sqr-orange text-3xl"></i>
+                <h3 class="font-bold mt-2">Ramadhan Berbagi</h3>
+                <p class="text-xs mt-2" id="ramadhan_berbagi_desc">Lomba, Kultum, Buka Puasa Bersama 13-14 Maret 2026</p>
+            </div>
+        </div>
+        <div class="bg-sqr-green text-white p-4 rounded-2xl mt-6 text-sm" data-aos="fade-up">
+            <i class="fa-solid fa-hand-holding-heart mr-2"></i>
+            Salurkan Infaq & Donasi: <strong>Bank BSI 7199588979</strong> a/n Yayasan Bina Cahaya Ilmu Rabbani
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 6: FAQ ==================== -->
+<section id="slide-faq" class="slide-section bg-sqr-green text-white">
+    <div class="max-w-4xl w-full text-center">
+        <h2 class="font-title text-3xl font-black mt-4">Pertanyaan Umum</h2>
+        <div id="faqList" class="mt-6 space-y-3 text-left"></div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 7: LAPORAN ==================== -->
+<section id="slide-laporan" class="slide-section bg-[#eaf4c3]">
+    <div class="max-w-5xl w-full text-center">
+        <h2 class="font-title text-2xl font-black text-sqr-green mt-2">Laporan Donasi Jumat Berbagi</h2>
+        <div class="flex gap-2 justify-center mt-4 flex-wrap" id="reportButtons"></div>
+        <div id="financialCard" class="glass-panel p-6 rounded-3xl mt-6 text-left"></div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-sqr-dark text-sqr-bg text-center py-8 border-t border-white/10">
+    <div class="max-w-3xl mx-auto px-4">
+        <img src="https://res.cloudinary.com/ddh5nkwv7/image/upload/v1782638700/logo_sqr_atzzpb.png" alt="Logo SQR" class="w-12 h-12 rounded-full object-cover mx-auto mb-3 shadow-md">
+        <p class="font-title font-black tracking-wide text-sm">SAUNG QURAN RABBANI</p>
+        <p class="text-[10px] opacity-50 mt-1">Yayasan Bina Cahaya Ilmu Rabbani</p>
+        <div class="flex justify-center gap-4 mt-4">
+            <a id="footerWhatsappLink" href="https://wa.me/6289677082002" target="_blank"
+               class="text-sqr-light-green hover:text-white transition text-xs flex items-center gap-1.5">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span id="footerWhatsappNumber">0896-7708-2002</span>
+            </a>
+        </div>
+        <p class="text-[10px] opacity-30 mt-4">Portal Presentasi Interaktif SQR &copy; 2026 · Saung Quran Rabbani</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js"></script>
+<script>
+// =====================================================
+// KONFIGURASI
+// =====================================================
+// GAS_BASE_URL: didapat dari inject server (window.__GAS_BASE_URL__) agar dinamis, fallback ke URL lama
+var GAS_BASE_URL = (typeof window.__GAS_BASE_URL__ !== 'undefined' && window.__GAS_BASE_URL__)
+    ? window.__GAS_BASE_URL__
+    : window.location.href.split('?')[0];
+
+var slideIds = ['slide-ppdb','slide-sanlat','slide-jadwal','slide-kajian','slide-berbagi','slide-faq','slide-laporan'];
+
+
+var financialDatabase = {
+    okt: { title: "Oktober 2025", sources: [["Dana bulan lalu","Rp 295.000"],["Uang ta'awun September","Rp 550.000"],["Total Sumber Dana","Rp 845.000"]], expenses: [["Snack","Rp 408.000"],["Hadiah + ATK","Rp 87.000"],["Total Pengeluaran","Rp 495.000"]], balance: "Rp 350.000" },
+    nov: { title: "November 2025", sources: [["Dana bulan lalu","Rp 217.000"],["Uang ta'awun November","Rp 250.000"],["Lain-lain","Rp 1.500"],["Total Sumber Dana","Rp 468.500"]], expenses: [["Snack","Rp 310.000"],["Total Pengeluaran","Rp 310.000"]], balance: "Rp 158.500" },
+    des: { title: "Desember 2025", sources: [["Dana bulan lalu","Rp 158.500"],["Uang ta'awun Desember","Rp 200.000"],["Total Sumber Dana","Rp 358.500"]], expenses: [["Snack","Rp 218.000"],["Hadiah","Rp 115.000"],["Total Pengeluaran","Rp 333.000"]], balance: "Rp 25.500" },
+    jan: { title: "Januari 2026", sources: [["Dana bulan lalu","Rp 25.500"],["Uang ta'awun Januari","Rp 175.000"],["Total Sumber Dana","Rp 200.500"]], expenses: [["Snack","Rp 78.000"],["Hadiah","Rp 74.000"],["Total Pengeluaran","Rp 152.000"]], balance: "Rp 48.500" },
+    feb: { title: "Februari 2026", sources: [["Dana bulan lalu","Rp 48.500"],["Uang ta'awun Februari","Rp 375.000"],["Total Sumber Dana","Rp 423.500"]], expenses: [["Somay","Rp 250.000"],["Hadiah","Rp 86.000"],["Minuman","Rp 39.000"],["Total Pengeluaran","Rp 375.000"]], balance: "Rp 48.500" }
+};
+
+// =====================================================
+// LOADING SCREEN
+// =====================================================
+function hideLoadingScreen() {
+    var ls = document.getElementById('loadingScreen');
+    ls.classList.add('fade-out');
+    setTimeout(function() { ls.style.display = 'none'; }, 500);
+}
+
+// =====================================================
+// TOAST NOTIFIKASI
+// =====================================================
+function showToast(msg, isError) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show' + (isError ? ' error' : '');
+    setTimeout(function() { t.className = ''; }, 3000);
+}
+
+// =====================================================
+// LOGIN MODAL
+// =====================================================
+function openLoginModal() {
+    document.getElementById('loginModal').classList.remove('hidden');
+    document.getElementById('loginEmail').focus();
+}
+function closeLoginModal() {
+    document.getElementById('loginModal').classList.add('hidden');
+    document.getElementById('loginError').classList.add('hidden');
+}
+document.getElementById('loginModal').addEventListener('click', function(e) {
+    if (e.target === this) closeLoginModal();
+});
+document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+});
+document.getElementById('loginEmail').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+});
+
+function togglePasswordVisibility() {
+    var input = document.getElementById('loginPassword');
+    var icon  = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash text-sm';
+    } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye text-sm';
+    }
+}
+
+function showLoginError(msg) {
+    var el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+}
+
+function doLogin() {
+    var email    = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPassword').value;
+    var btn      = document.getElementById('loginBtn');
+    document.getElementById('loginError').classList.add('hidden');
+
+    if (!email || !password) {
+        showLoginError('Email dan password wajib diisi.');
+        return;
+    }
+
+    btn.disabled  = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+
+    // ✅ google.script.run tersedia di dalam GAS HTML Service
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                try { localStorage.setItem('sessionToken', result.sessionToken); } catch(e) {}
+                // Gunakan window.top agar halaman utama dialihkan keluar dari iframe sandbox
+                window.top.location.href = GAS_BASE_URL + '?page=dashboard&token=' + result.sessionToken;
+            } else {
+                showLoginError(result.message || 'Login gagal. Periksa email dan password.');
+                btn.disabled  = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard';
+            }
+        })
+        .withFailureHandler(function(err) {
+            showLoginError('Terjadi kesalahan: ' + (err.message || 'Coba lagi'));
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard';
+        })
+        .login(email, password);
+}
+
+// =====================================================
+// FORM PPDB — kirim ke sheet "PPDB"
+// =====================================================
+function submitPPDB() {
+    var nama  = document.getElementById('f_nama').value.trim();
+    var usia  = document.getElementById('f_usia').value.trim();
+    var ortu  = document.getElementById('f_ortu').value.trim();
+    var wa    = document.getElementById('f_wa').value.trim();
+    var kelas = document.getElementById('f_kelas').value;
+
+    if (!nama || !usia || !ortu || !wa) {
+        showToast('⚠ Lengkapi semua field yang wajib diisi', true);
+        return;
+    }
+    if (!/^[0-9]{9,15}$/.test(wa.replace(/[\s\-]/g,''))) {
+        showToast('⚠ Nomor WhatsApp tidak valid', true);
+        return;
+    }
+
+    var btn = document.getElementById('submitPpdbBtn');
+    btn.disabled  = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+    var data = {
+        nama: nama,
+        usia: usia,
+        ortu: ortu,
+        wa: wa,
+        kelas: kelas || 'Belum dipilih',
+        timestamp: new Date().toLocaleString('id-ID')
+    };
+
+    // Panggil fungsi GAS: submitPPDB(data)
+    google.script.run
+        .withSuccessHandler(function(result) {
+            document.getElementById('ppdbForm').classList.add('hidden');
+            document.getElementById('ppdbSuccess').classList.remove('hidden');
+            showToast('✅ Pendaftaran berhasil dikirim!');
+        })
+        .withFailureHandler(function(err) {
+            showToast('❌ Gagal mengirim. Silakan coba lagi.', true);
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Pendaftaran';
+        })
+        .submitPPDB(data);
+}
+
+// =====================================================
+// LOAD KONTEN DARI GAS (ContentManager sheet)
+// =====================================================
+function loadAllContents() {
+    google.script.run
+        .withSuccessHandler(function(contents) {
+            var data = {};
+            if (contents && contents.length) {
+                contents.forEach(function(c) { if (c.key) data[c.key] = c.value; });
+            }
+            applyContents(data);
+
+            // Init setelah konten dimuat
+            initAOS();
+            initSlideNavigation();
+            initFinancialReports();
+            hideLoadingScreen();
+        })
+        .withFailureHandler(function(err) {
+            console.warn('loadAllContents error:', err);
+            // Tetap init meski gagal load konten
+            initAOS();
+            initSlideNavigation();
+            initFinancialReports();
+            hideLoadingScreen();
+        })
+        .getAllContents();
+}
+
+function applyContents(data) {
+    function set(id, val) {
+        var el = document.getElementById(id);
+        if (el && val !== null && val !== undefined) el.innerText = val;
+    }
+    function setHTML(id, val) {
+        var el = document.getElementById(id);
+        if (el && val !== null && val !== undefined) el.innerHTML = val;
+    }
+
+    if (data.home_tagline)  set('home_tagline', data.home_tagline);
+    if (data.stat_total_santri) set('stat_total_santri', data.stat_total_santri);
+    if (data.stat_pengajar) set('stat_pengajar', data.stat_pengajar);
+    if (data.stat_tahun)    set('stat_tahun', data.stat_tahun);
+
+    if (data.whatsapp_link) {
+        var waLink = data.whatsapp_link;
+        var waNum  = waLink.replace('https://wa.me/62','0').replace('https://wa.me/','');
+        document.getElementById('whatsappLink').href        = waLink;
+        document.getElementById('sanlatWhatsappLink').href  = waLink;
+        document.getElementById('footerWhatsappLink').href  = waLink;
+        document.getElementById('footerWhatsappNumber').innerText = waNum;
+    }
+
+    // Keunggulan list (JSON array)
+    if (data.keunggulan_list) {
+        try {
+            var list = JSON.parse(data.keunggulan_list);
+            var html = '';
+            list.forEach(function(item) {
+                html += '<li class="flex gap-2"><i class="fa-solid fa-check text-sqr-orange mt-0.5"></i> ' + item + '</li>';
+            });
+            setHTML('keunggulanList', html);
+        } catch(e) {}
+    }
+
+    // Sanlat
+    if (data.sanlat_title)         set('sanlat_title', data.sanlat_title);
+    if (data.sanlat_subtitle)      set('sanlat_subtitle', data.sanlat_subtitle);
+    if (data.sanlat_pemateri)      set('sanlat_pemateri', data.sanlat_pemateri);
+    if (data.sanlat_pemateri_desc) set('sanlat_pemateri_desc', data.sanlat_pemateri_desc);
+    if (data.sanlat_target) {
+        setHTML('sanlat_target', '<i class="fa-solid fa-child text-sqr-orange"></i> ' + data.sanlat_target);
+    }
+    if (data.sanlat_waktu) {
+        setHTML('sanlat_waktu', data.sanlat_waktu.replace(/\n/g,'<br>'));
+    }
+    if (data.sanlat_harga_umum)   set('sanlat_harga_umum', data.sanlat_harga_umum);
+    if (data.sanlat_harga_santri) set('sanlat_harga_santri', data.sanlat_harga_santri);
+    if (data.sanlat_kegiatan) {
+        try {
+            var kegiatan = JSON.parse(data.sanlat_kegiatan);
+            var html = '';
+            kegiatan.forEach(function(k) {
+                html += '<div class="bg-sqr-bg p-2.5 rounded-xl flex items-center gap-2"><i class="fa-solid fa-star text-sqr-orange text-[10px]"></i> ' + k + '</div>';
+            });
+            setHTML('sanlatKegiatanList', html);
+        } catch(e) {}
+    }
+
+    // Jadwal
+    if (data.jadwal_anak)   renderJadwal('jadwalAnak',   data.jadwal_anak);
+    if (data.jadwal_remaja) renderJadwal('jadwalRemaja', data.jadwal_remaja);
+    if (data.jadwal_dewasa) renderJadwal('jadwalDewasa', data.jadwal_dewasa);
+    if (data.biaya_spp)     set('biaya_spp', data.biaya_spp);
+
+    // Kajian
+    if (data.mengapa_sqr)     set('mengapa_sqr', data.mengapa_sqr);
+    if (data.kajian_judul)    set('kajian_judul', data.kajian_judul);
+    if (data.kajian_pemateri) set('kajian_pemateri', data.kajian_pemateri);
+    if (data.kajian_waktu)    set('kajian_waktu', data.kajian_waktu);
+    if (data.kajian_media)    set('kajian_media', data.kajian_media);
+
+    // Berbagi & Financial Reports
+    if (data.jumat_berbagi_desc)    set('jumat_berbagi_desc', data.jumat_berbagi_desc);
+    if (data.ramadhan_berbagi_desc) set('ramadhan_berbagi_desc', data.ramadhan_berbagi_desc);
+    if (data.financial_reports) {
+        try {
+            var parsedReports = typeof data.financial_reports === 'string' ? JSON.parse(data.financial_reports) : data.financial_reports;
+            if (parsedReports && typeof parsedReports === 'object' && Object.keys(parsedReports).length > 0) {
+                financialDatabase = parsedReports;
+                if (typeof initFinancialReports === 'function') initFinancialReports();
+            }
+        } catch(e) { console.warn('financial_reports parse error:', e); }
+    }
+
+    // Timeline milestones
+    if (data.timeline_milestones) {
+        try {
+            var milestones = JSON.parse(data.timeline_milestones);
+            var html = '';
+            milestones.forEach(function(m) {
+                html += '<div class="timeline-item mb-4"><div class="timeline-dot"></div>' +
+                        '<p class="text-xs font-bold text-white">' + m.year + ' — ' + m.desc + '</p></div>';
+            });
+            setHTML('timelineMilestones', html);
+        } catch(e) {}
+    }
+
+    // FAQ
+    if (data.faq_list) {
+        try {
+            var faqs = JSON.parse(data.faq_list);
+            var html = '';
+            faqs.forEach(function(item, idx) {
+                html += '<div class="bg-white/10 rounded-2xl p-4">' +
+                        '<button onclick="toggleFaq(this)" class="w-full text-left flex justify-between items-start gap-2">' +
+                        '<span class="text-sm font-bold">' + item.q + '</span>' +
+                        '<i class="fa-solid fa-plus text-sqr-orange faq-icon shrink-0 mt-0.5"></i></button>' +
+                        '<div class="faq-answer text-xs text-gray-300 mt-2 leading-relaxed">' + item.a + '</div></div>';
+            });
+            setHTML('faqList', html);
+        } catch(e) {}
+    }
+
+    // ===== TOGGLE SECTION VISIBILITY =====
+    // Sanlat — Tampilkan jika 'true', sembunyikan hanya jika secara eksplisit 'false'
+    var sanlatEl = document.getElementById('slide-sanlat');
+    if (data.sanlat_active === 'false' || data.sanlat_active === false) {
+        sanlatEl.style.display = 'none';
+    } else {
+        sanlatEl.style.display = 'flex'; // default tampil
+    }
+
+    // Kajian
+    var kajianEl = document.getElementById('slide-kajian');
+    if (data.kajian_active === 'false' || data.kajian_active === false) {
+        kajianEl.style.display = 'none';
+    } else {
+        kajianEl.style.display = 'flex'; // default tampil
+    }
+
+    // Berbagi
+    var berbagiEl = document.getElementById('slide-berbagi');
+    if (data.berbagi_active === 'false' || data.berbagi_active === false) {
+        berbagiEl.style.display = 'none';
+    } else {
+        berbagiEl.style.display = 'flex'; // default tampil
+    }
+
+    // Update slide IDs setelah section toggle (hapus yg hidden)
+    updateVisibleSlides();
+}
+
+function renderJadwal(containerId, scheduleText) {
+    var container = document.getElementById(containerId);
+    if (!container || !scheduleText) return;
+    var parts = scheduleText.split(',').map(function(s) { return s.trim(); });
+    var html  = '';
+    parts.forEach(function(part) {
+        var match = part.match(/([A-Za-z\s\u00C0-\u024F&\-]+)\s+([\d]{2}[.:]\d{2}\s*[-–]\s*[\d]{2}[.:]\d{2})/);
+        if (match) {
+            html += '<div class="flex justify-between items-center bg-sqr-bg/60 px-3 py-2 rounded-xl">' +
+                    '<span>' + match[1].trim() + '</span>' +
+                    '<span class="text-sqr-orange font-bold">' + match[2].trim() + '</span></div>';
+        } else {
+            html += '<div class="bg-sqr-bg/60 px-3 py-2 rounded-xl"><span>' + part + '</span></div>';
+        }
+    });
+    container.innerHTML = html;
+}
+
+// =====================================================
+// LAPORAN KEUANGAN
+// =====================================================
+function initFinancialReports() {
+    var months  = Object.keys(financialDatabase);
+    var btnHtml = '';
+    months.forEach(function(m) {
+        btnHtml += '<button onclick="switchFinancialReport(\'' + m + '\')" id="btn_' + m + '" ' +
+                   'class="report-btn bg-white text-sqr-green px-3 py-1 rounded-xl text-xs font-bold border border-sqr-green/20 hover:bg-sqr-green hover:text-white transition">' +
+                   financialDatabase[m].title + '</button>';
+    });
+    document.getElementById('reportButtons').innerHTML = btnHtml;
+    switchFinancialReport('feb'); // default ke bulan terakhir
+}
+
+function switchFinancialReport(key) {
+    // Update active button style
+    document.querySelectorAll('.report-btn').forEach(function(btn) {
+        btn.classList.remove('bg-sqr-green', 'text-white');
+        btn.classList.add('bg-white', 'text-sqr-green');
+    });
+    var activeBtn = document.getElementById('btn_' + key);
+    if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-sqr-green');
+        activeBtn.classList.add('bg-sqr-green', 'text-white');
+    }
+
+    var data = financialDatabase[key];
+    var sHtml = '', eHtml = '';
+    data.sources.forEach(function(s) {
+        var isBold = s[0].toLowerCase().includes('total');
+        sHtml += '<li class="flex justify-between py-1.5 border-b border-gray-100 ' + (isBold ? 'font-bold text-sqr-green' : '') + '">' +
+                 '<span>' + s[0] + '</span><span>' + s[1] + '</span></li>';
+    });
+    data.expenses.forEach(function(e) {
+        var isBold = e[0].toLowerCase().includes('total');
+        eHtml += '<li class="flex justify-between py-1.5 border-b border-gray-100 ' + (isBold ? 'font-bold text-red-600' : '') + '">' +
+                 '<span>' + e[0] + '</span><span>' + e[1] + '</span></li>';
+    });
+
+    document.getElementById('financialCard').innerHTML =
+        '<h4 class="font-bold text-sqr-orange text-base mb-4">' + data.title + '</h4>' +
+        '<div class="grid md:grid-cols-2 gap-6">' +
+        '<div><h5 class="text-sm font-bold text-green-700 mb-2">📥 Pemasukan</h5><ul class="text-xs space-y-0">' + sHtml + '</ul></div>' +
+        '<div><h5 class="text-sm font-bold text-red-600 mb-2">📤 Pengeluaran</h5><ul class="text-xs space-y-0">' + eHtml + '</ul></div>' +
+        '</div>' +
+        '<div class="mt-5 text-center bg-sqr-green text-white py-2.5 px-4 rounded-xl font-bold">💰 Sisa Saldo: ' + data.balance + '</div>';
+}
+
+// =====================================================
+// SLIDE NAVIGATION — FIXED ACTIVE STATE
+// =====================================================
+var visibleSlideIds = [];
+
+function updateVisibleSlides() {
+    // Rebuild array berdasarkan section yang visible
+    visibleSlideIds = slideIds.filter(function(id) {
+        var el = document.getElementById(id);
+        return el && el.style.display !== 'none';
+    });
+    // Update total counter
+    document.getElementById('slide-counter').innerHTML = '1/' + visibleSlideIds.length;
+}
+
+function getCurrentSlideIndex() {
+    var pos = window.scrollY + window.innerHeight / 3;
+    var cur = 0;
+    visibleSlideIds.forEach(function(id, i) {
+        var el = document.getElementById(id);
+        if (el && pos >= el.offsetTop) cur = i;
+    });
+    return cur;
+}
+
+function navigateSlide(dir) {
+    var cur  = getCurrentSlideIndex();
+    var next = cur + dir;
+    if (next >= 0 && next < visibleSlideIds.length) {
+        document.getElementById(visibleSlideIds[next]).scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function updateNavActive() {
+    var cur = getCurrentSlideIndex();
+    var currentId = visibleSlideIds[cur];
+    // Update counter
+    document.getElementById('slide-counter').innerHTML = (cur + 1) + '/' + visibleSlideIds.length;
+
+    // ===== FIX: Update active class pada nav buttons =====
+    document.querySelectorAll('.nav-btn').forEach(function(btn) {
+        var href    = btn.getAttribute('href');
+        var slideId = href ? href.replace('#', '') : '';
+        if (slideId === currentId) {
+            btn.classList.add('active');
+            // Scroll nav ke button yang aktif
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
+
+function initSlideNavigation() {
+    updateVisibleSlides();
+
+    // Scroll listener dengan throttle
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                updateNavActive();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // Update saat klik nav link
+    document.querySelectorAll('.nav-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            setTimeout(updateNavActive, 600);
+        });
+    });
+
+    updateNavActive();
+}
+
+// =====================================================
+// AOS — dipanggil setelah konten dimuat
+// =====================================================
+function initAOS() {
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 700,
+            once: true,
+            offset: 50,
+            easing: 'ease-out-cubic'
+        });
+        // Re-refresh untuk elemen yang baru dimuat
+        setTimeout(function() { AOS.refresh(); }, 100);
+    }
+}
+
+// =====================================================
+// FAQ TOGGLE
+// =====================================================
+function toggleFaq(btn) {
+    var answer = btn.nextElementSibling;
+    var icon   = btn.querySelector('.faq-icon');
+    answer.classList.toggle('open');
+    icon.classList.toggle('rotated');
+}
+
+// =====================================================
+// CEK URL PARAMS (pesan error dari redirect)
+// =====================================================
+window.addEventListener('DOMContentLoaded', function() {
+    var msg = new URLSearchParams(window.location.search).get('msg');
+    if (msg) showLoginError(decodeURIComponent(msg));
+});
+
+// =====================================================
+// MOBILE SIDEBAR DRAWER TOGGLE
+// =====================================================
+function toggleMobileSidebar() {
+    var overlay = document.getElementById('mobileSidebarOverlay');
+    var panel   = document.getElementById('mobileSidebarPanel');
+    if (!overlay || !panel) return;
+    
+    if (overlay.classList.contains('hidden')) {
+        overlay.classList.remove('hidden');
+        setTimeout(function() {
+            panel.classList.remove('translate-x-full');
+        }, 10);
+    } else {
+        panel.classList.add('translate-x-full');
+        setTimeout(function() {
+            overlay.classList.add('hidden');
+        }, 300);
+    }
+}
+
+function onMobileNavClick(slideId) {
+    toggleMobileSidebar();
+    var el = document.getElementById(slideId);
+    if (el) {
+        setTimeout(function() {
+            el.scrollIntoView({ behavior: 'smooth' });
+        }, 200);
+    }
+}
+
+// =====================================================
+// CUSTOM CLASS PICKER MODAL (100% Mobile iframe proof)
+// =====================================================
+function openClassPicker() {
+    var modal = document.getElementById('classPickerModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+}
+
+function closeClassPicker() {
+    var modal = document.getElementById('classPickerModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+function selectClassOption(val, labelText) {
+    var sel = document.getElementById('f_kelas');
+    var label = document.getElementById('classPickerLabel');
+    var trigger = document.getElementById('classPickerTrigger');
+    if (sel) sel.value = val;
+    if (label) {
+        label.textContent = labelText;
+        if (val) {
+            trigger.classList.add('text-sqr-green', 'font-bold');
+            trigger.classList.remove('text-gray-700');
+        } else {
+            trigger.classList.remove('text-sqr-green', 'font-bold');
+            trigger.classList.add('text-gray-700');
+        }
+    }
+    closeClassPicker();
+}
+
+// =====================================================
+// NAVIGASI KE HALAMAN BARU
+// =====================================================
+function getGasBaseUrl() {
+    var url = '';
+    try {
+        if (window.top && window.top.location && window.top.location.href) {
+            url = window.top.location.href;
+        }
+    } catch(e) {}
+    if (!url && typeof window.__GAS_BASE_URL__ !== 'undefined' && window.__GAS_BASE_URL__) {
+        url = window.__GAS_BASE_URL__;
+    }
+    if (!url) {
+        url = window.location.href;
+    }
+    return url.split('?')[0].split('#')[0];
+}
+
+function goToPage(page) {
+    if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        window.location.href = page + '.html';
+    } else {
+        var baseUrl = getGasBaseUrl();
+        window.top.location.href = baseUrl + '?page=' + page;
+    }
+}
+
+// =====================================================
+// TOOLBAR & DROPDOWN NAV HANDLERS
+// =====================================================
+function toggleNavDropdown(e) {
+    if (e) e.stopPropagation();
+    var container = document.getElementById('navDropdownContainer');
+    if (container) container.classList.toggle('open');
+}
+
+function closeNavDropdown() {
+    var container = document.getElementById('navDropdownContainer');
+    if (container) container.classList.remove('open');
+}
+
+// Scroll ke section berdasarkan ID – aman di GAS iframe (tidak pakai href="#...")
+function scrollToSection(sectionId) {
+    closeNavDropdown();
+    var el = document.getElementById(sectionId);
+    if (el) {
+        var navHeight = 64; // tinggi navbar fixed
+        var top = el.getBoundingClientRect().top + window.pageYOffset - navHeight;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+}
+
+document.addEventListener('click', function(e) {
+    var container = document.getElementById('navDropdownContainer');
+    if (container && !container.contains(e.target)) {
+        container.classList.remove('open');
+    }
+});
+
+// =====================================================
+// ARTIKEL SIDEBAR
+// =====================================================
+var currentArtikelPage = 1;
+var totalArtikelPages  = 1;
+var allArtikelData     = [];
+var artikelLoaded      = false;
+
+function openArtikelSidebar() {
+    var overlay  = document.getElementById('artikelSidebarOverlay');
+    var panel    = document.getElementById('artikelSidebarPanel');
+    var floatBtn = document.getElementById('floatingLeftArtikelBtn');
+    if (!overlay || !panel) return;
+    overlay.style.display = 'block';
+    if (floatBtn) floatBtn.style.display = 'none';
+    setTimeout(function() { panel.classList.add('open'); }, 10);
+    document.body.style.overflow = 'hidden';
+    if (!artikelLoaded) { loadArtikel(1); }
+}
+
+function closeArtikelSidebar() {
+    var overlay  = document.getElementById('artikelSidebarOverlay');
+    var panel    = document.getElementById('artikelSidebarPanel');
+    var floatBtn = document.getElementById('floatingLeftArtikelBtn');
+    if (!overlay || !panel) return;
+    panel.classList.remove('open');
+    setTimeout(function() {
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+        if (floatBtn) floatBtn.style.display = 'flex';
+    }, 350);
+}
+
+function loadArtikel(page) {
+    page = page || 1;
+    if (page < 1 || (page > totalArtikelPages && artikelLoaded)) return;
+    currentArtikelPage = page;
+    document.getElementById('artikelLoading').style.display = 'block';
+
+    google.script.run
+        .withSuccessHandler(function(res) {
+            if (!res) res = { articles: [], total: 0, page: 1, totalPages: 1 };
+            totalArtikelPages = res.totalPages || 1;
+            artikelLoaded     = true;
+            allArtikelData    = res.articles || [];
+            renderArtikelList(res.articles, res.total, res.page, res.totalPages);
+        })
+        .withFailureHandler(function() {
+            document.getElementById('artikelLoading').style.display = 'none';
+            document.getElementById('artikelList').innerHTML =
+                '<div class="text-center py-8 text-white/40 text-xs"><i class="fa-solid fa-wifi-slash text-2xl mb-2 block"></i>Gagal memuat artikel</div>';
+        })
+        .getArticles(page, 6);
+}
+
+function getCatColor(cat) {
+    var m = { 'Kegiatan':'bg-emerald-400/20 text-emerald-300', 'Acara':'bg-blue-400/20 text-blue-300', 'Pengumuman':'bg-amber-400/20 text-amber-300' };
+    return m[cat] || 'bg-white/10 text-white/60';
+}
+
+function renderArtikelList(articles, total, page, totalPages) {
+    var loading = document.getElementById('artikelLoading');
+    var list    = document.getElementById('artikelList');
+    var footer  = document.getElementById('artikelFooter');
+    var info    = document.getElementById('artikelPaginasiInfo');
+    var moreBtn = document.getElementById('artikelLoadMore');
+    var pag     = document.getElementById('artikelPagination');
+
+    loading.style.display = 'none';
+
+    if (!articles || articles.length === 0) {
+        list.innerHTML = '<div class="text-center py-8 text-white/40 text-xs"><i class="fa-solid fa-inbox text-3xl mb-3 block"></i>Belum ada artikel</div>';
+        footer.classList.add('hidden');
+        return;
+    }
+
+    var baseUrl = (typeof window.__GAS_BASE_URL__ !== 'undefined' && window.__GAS_BASE_URL__)
+        ? window.__GAS_BASE_URL__ : window.location.href.split('?')[0];
+
+    var html = '';
+    articles.forEach(function(art) {
+        var catCls = getCatColor(art.category);
+        var hasImg = art.mediaUrl && art.mediaType !== 'video';
+        var isVid  = art.mediaType === 'video' || (art.mediaUrl && /youtu/.test(art.mediaUrl));
+        var dateDisplay = '';
+        if (art.publishedAt) {
+            try {
+                var d = new Date(art.publishedAt);
+                if (!isNaN(d.getTime())) {
+                    var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+                    dateDisplay = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+                } else {
+                    dateDisplay = String(art.publishedAt).substring(0, 10);
+                }
+            } catch(e) {
+                dateDisplay = String(art.publishedAt).substring(0, 10);
+            }
+        }
+        html += '<div class="artikel-card" onclick="openArtikelDetail(\'' + art.articleId + '\')">';
+        if (hasImg) {
+            html += '<img src="' + art.mediaUrl + '" class="artikel-card-img" alt="' + art.title + '" onerror="this.style.display=\'none\'">';
+        } else if (isVid) {
+            html += '<div class="artikel-card-img flex items-center justify-center bg-sqr-dark/80"><i class="fa-brands fa-youtube text-4xl text-red-400"></i></div>';
+        }
+        html += '<div class="p-3">';
+        html += '<div class="flex items-center gap-2 mb-1.5"><span class="text-[9px] font-bold px-2 py-0.5 rounded-full ' + catCls + '">' + art.category + '</span>';
+        if (isVid) html += '<span class="text-[9px] text-red-400 font-bold flex items-center gap-1"><i class="fa-solid fa-play-circle"></i> Video</span>';
+        html += '</div>';
+        html += '<p class="font-bold text-xs text-white leading-snug line-clamp-2 mb-1">' + art.title + '</p>';
+        if (art.excerpt) html += '<p class="text-[10px] text-white/50 leading-relaxed line-clamp-2">' + art.excerpt + '</p>';
+        html += '<div class="flex items-center justify-between mt-2">';
+        html += '<span class="text-[9px] text-white/40 font-semibold">' + dateDisplay + '</span>';
+        html += '<span class="text-[9px] text-sqr-orange font-bold">Baca →</span>';
+        html += '</div></div></div>';
+    });
+    list.innerHTML = html;
+
+    // Footer / pagination
+    footer.classList.remove('hidden');
+    info.textContent = total + ' artikel · Hal. ' + page + '/' + totalPages;
+
+    // Load More button
+    if (page < totalPages) {
+        moreBtn.classList.remove('hidden');
+    } else {
+        moreBtn.classList.add('hidden');
+    }
+
+    // Page buttons
+    if (totalPages > 1) {
+        var pagHtml = '';
+        for (var p = 1; p <= totalPages; p++) {
+            pagHtml += '<button onclick="loadArtikel(' + p + ')" class="w-7 h-7 rounded-full text-[10px] font-bold transition ' +
+                (p === page ? 'bg-sqr-orange text-white' : 'bg-white/10 text-white/60 hover:bg-white/20') + '">' + p + '</button>';
+        }
+        pag.innerHTML = pagHtml;
+    } else {
+        pag.innerHTML = '';
+    }
+}
+
+function filterArtikel() {
+    var q = (document.getElementById('artikelSearch').value || '').toLowerCase().trim();
+    if (!q) { renderArtikelList(allArtikelData, allArtikelData.length, currentArtikelPage, totalArtikelPages); return; }
+    var filtered = allArtikelData.filter(function(a) {
+        return (a.title||'').toLowerCase().includes(q) || (a.excerpt||'').toLowerCase().includes(q) || (a.category||'').toLowerCase().includes(q);
+    });
+    renderArtikelList(filtered, filtered.length, 1, 1);
+}
+
+function openArtikelDetail(articleId) {
+    if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        window.location.href = 'artikel.html?articleId=' + articleId;
+    } else {
+        window.top.location.href = getGasBaseUrl() + '?page=artikel&articleId=' + articleId;
+    }
+}
+
+// =====================================================
+// INIT
+// =====================================================
+window.onload = function() {
+    // Fallback: kalau getAllContents gagal total setelah 5 detik, tetap hide loading
+    setTimeout(function() { hideLoadingScreen(); }, 5000);
+    loadAllContents();
+};
+</script>
+</body>
+</html>
