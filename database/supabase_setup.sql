@@ -1,6 +1,6 @@
 -- ========================================================
 -- SAUNG QURAN RABBANI (SQR) - FULL SUPABASE POSTGRESQL SCRIPT
--- Generated At: 2026-09-04 05:27:13
+-- Generated At: 2026-09-04 05:28:17
 -- Includes: Complete CREATE TABLE DDL + INSERT DATA DML
 -- ========================================================
 
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS "failed_jobs" (
     "queue" TEXT NOT NULL,
     "payload" TEXT NOT NULL,
     "exception" TEXT NOT NULL,
-    "failed_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT 'CURRENT_TIMESTAMP'
+    "failed_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- --------------------------------------------------------
