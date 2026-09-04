@@ -1,6 +1,6 @@
 -- ========================================================
 -- SAUNG QURAN RABBANI (SQR) - FULL SUPABASE POSTGRESQL SCRIPT
--- Generated At: 2026-09-04 05:26:08
+-- Generated At: 2026-09-04 05:27:13
 -- Includes: Complete CREATE TABLE DDL + INSERT DATA DML
 -- ========================================================
 
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
     "updated_at" TIMESTAMP WITHOUT TIME ZONE,
     "class_id" BIGINT,
-    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "is_active" BIGINT NOT NULL DEFAULT 1,
     "address" TEXT,
     "photo_url" TEXT,
     "gender" TEXT NOT NULL DEFAULT 'L',
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "birth_place" TEXT,
     "birth_date" DATE,
     "education" TEXT,
-    "is_profile_completed" BIGINT NOT NULL DEFAULT '0',
+    "is_profile_completed" BIGINT NOT NULL DEFAULT 0,
     "signature_url" TEXT,
     "location_id" BIGINT
 );
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS "failed_jobs" (
     "queue" TEXT NOT NULL,
     "payload" TEXT NOT NULL,
     "exception" TEXT NOT NULL,
-    "failed_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "failed_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT 'CURRENT_TIMESTAMP'
 );
 
 -- --------------------------------------------------------
@@ -198,10 +198,10 @@ CREATE TABLE IF NOT EXISTS "sqr_locations" (
     "name" TEXT NOT NULL,
     "code" TEXT NOT NULL,
     "address" TEXT,
-    "latitude" NUMERIC(15,2) NOT NULL DEFAULT '-6.397637',
-    "longitude" NUMERIC(15,2) NOT NULL DEFAULT '106.877478',
-    "radius_meters" BIGINT NOT NULL DEFAULT '150',
-    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "latitude" NUMERIC(15,2) NOT NULL DEFAULT -6.397637,
+    "longitude" NUMERIC(15,2) NOT NULL DEFAULT 106.877478,
+    "radius_meters" BIGINT NOT NULL DEFAULT 150,
+    "is_active" BIGINT NOT NULL DEFAULT 1,
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
     "updated_at" TIMESTAMP WITHOUT TIME ZONE
 );
@@ -218,16 +218,16 @@ CREATE TABLE IF NOT EXISTS "classes" (
     "id" BIGSERIAL PRIMARY KEY,
     "class_name" TEXT NOT NULL,
     "description" TEXT,
-    "quota" BIGINT NOT NULL DEFAULT '30',
-    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "quota" BIGINT NOT NULL DEFAULT 30,
+    "is_active" BIGINT NOT NULL DEFAULT 1,
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
     "updated_at" TIMESTAMP WITHOUT TIME ZONE,
     "start_time" TEXT NOT NULL DEFAULT '15:30',
     "end_time" TEXT NOT NULL DEFAULT '17:00',
     "attendance_start_time" TEXT NOT NULL DEFAULT '15:30',
     "attendance_end_time" TEXT NOT NULL DEFAULT '16:15',
-    "certificate_target" BIGINT NOT NULL DEFAULT '100',
-    "recommendation_target" BIGINT NOT NULL DEFAULT '50',
+    "certificate_target" BIGINT NOT NULL DEFAULT 100,
+    "recommendation_target" BIGINT NOT NULL DEFAULT 50,
     "location_id" BIGINT
 );
 
@@ -249,7 +249,7 @@ CREATE TABLE IF NOT EXISTS "santri" (
     "wali_user_id" BIGINT,
     "class_id" BIGINT,
     "enrollment_date" DATE,
-    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "is_active" BIGINT NOT NULL DEFAULT 1,
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
     "updated_at" TIMESTAMP WITHOUT TIME ZONE,
     "certificate_template" TEXT NOT NULL DEFAULT 'classic',
@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS "payments" (
     "id" BIGSERIAL PRIMARY KEY,
     "santri_id" BIGINT NOT NULL,
     "month_year" TEXT NOT NULL,
-    "amount" BIGINT NOT NULL DEFAULT '0',
+    "amount" BIGINT NOT NULL DEFAULT 0,
     "status" TEXT NOT NULL DEFAULT 'Unpaid',
     "notes" TEXT,
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
@@ -512,7 +512,7 @@ CREATE TABLE IF NOT EXISTS "sqr_notifications" (
     "user_id" BIGINT,
     "title" TEXT NOT NULL,
     "message" TEXT NOT NULL,
-    "is_read" BIGINT NOT NULL DEFAULT '0',
+    "is_read" BIGINT NOT NULL DEFAULT 0,
     "type" TEXT NOT NULL DEFAULT 'info',
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
     "updated_at" TIMESTAMP WITHOUT TIME ZONE,
@@ -550,7 +550,7 @@ CREATE TABLE IF NOT EXISTS "articles" (
     "excerpt" TEXT,
     "content" TEXT NOT NULL,
     "image_url" TEXT,
-    "is_published" BIGINT NOT NULL DEFAULT '0',
+    "is_published" BIGINT NOT NULL DEFAULT 0,
     "published_at" TIMESTAMP WITHOUT TIME ZONE,
     "author_id" BIGINT,
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
@@ -571,15 +571,15 @@ CREATE TABLE IF NOT EXISTS "campaigns" (
     "title" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "category" TEXT NOT NULL DEFAULT 'Sosial & Ta''awun',
-    "target_amount" NUMERIC(15,2) NOT NULL DEFAULT '0',
-    "current_amount" NUMERIC(15,2) NOT NULL DEFAULT '0',
+    "target_amount" NUMERIC(15,2) NOT NULL DEFAULT 0,
+    "current_amount" NUMERIC(15,2) NOT NULL DEFAULT 0,
     "excerpt" TEXT,
     "description" TEXT,
     "image_url" TEXT,
     "bank_name" TEXT NOT NULL DEFAULT 'Bank Syariah Indonesia (BSI)',
     "bank_account" TEXT NOT NULL DEFAULT '7289-0123-45',
     "bank_holder" TEXT NOT NULL DEFAULT 'Yayasan Bina Cahaya Ilmu Rabbani',
-    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "is_active" BIGINT NOT NULL DEFAULT 1,
     "end_date" DATE,
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
     "updated_at" TIMESTAMP WITHOUT TIME ZONE
@@ -601,7 +601,7 @@ CREATE TABLE IF NOT EXISTS "galleries" (
     "image_url" TEXT NOT NULL,
     "description" TEXT,
     "event_date" DATE,
-    "is_featured" BIGINT NOT NULL DEFAULT '1',
+    "is_featured" BIGINT NOT NULL DEFAULT 1,
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
     "updated_at" TIMESTAMP WITHOUT TIME ZONE
 );
@@ -656,7 +656,7 @@ CREATE TABLE IF NOT EXISTS "ustadz_attendance" (
     "latitude" NUMERIC(15,2),
     "longitude" NUMERIC(15,2),
     "distance_meters" BIGINT,
-    "is_within_radius" BIGINT NOT NULL DEFAULT '1'
+    "is_within_radius" BIGINT NOT NULL DEFAULT 1
 );
 
 -- Data for table: ustadz_attendance
@@ -740,7 +740,7 @@ CREATE TABLE IF NOT EXISTS "school_events" (
     "title" TEXT NOT NULL,
     "description" TEXT,
     "type" TEXT NOT NULL DEFAULT 'pengumuman',
-    "is_holiday" BIGINT NOT NULL DEFAULT '0',
+    "is_holiday" BIGINT NOT NULL DEFAULT 0,
     "online_link" TEXT,
     "online_start_time" TEXT,
     "class_id" BIGINT,
@@ -763,7 +763,7 @@ CREATE TABLE IF NOT EXISTS "ustadz_payroll_bonuses" (
     "ustadz_id" BIGINT NOT NULL,
     "month" BIGINT NOT NULL,
     "year" BIGINT NOT NULL,
-    "bonus_amount" NUMERIC(15,2) NOT NULL DEFAULT '0',
+    "bonus_amount" NUMERIC(15,2) NOT NULL DEFAULT 0,
     "bonus_note" TEXT,
     "created_by" BIGINT,
     "created_at" TIMESTAMP WITHOUT TIME ZONE,
