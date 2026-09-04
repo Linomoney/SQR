@@ -1,29 +1,39 @@
 -- ========================================================
--- SAUNG QURAN RABBANI (SQR) - SUPABASE POSTGRESQL DATA DUMP
--- Generated At: 2026-09-04 04:57:02
--- Instructions: Run this in Supabase SQL Editor after migrations
+-- SAUNG QURAN RABBANI (SQR) - FULL SUPABASE POSTGRESQL SCRIPT
+-- Generated At: 2026-09-04 05:26:08
+-- Includes: Complete CREATE TABLE DDL + INSERT DATA DML
 -- ========================================================
 
--- Data for table: roles
-INSERT INTO "roles" ("id", "name", "guard_name", "created_at", "updated_at") VALUES (1, 'admin', 'web', '2026-08-17 23:50:06', '2026-08-17 23:50:06') ON CONFLICT DO NOTHING;
-INSERT INTO "roles" ("id", "name", "guard_name", "created_at", "updated_at") VALUES (2, 'ustadz', 'web', '2026-08-17 23:50:06', '2026-08-17 23:50:06') ON CONFLICT DO NOTHING;
-INSERT INTO "roles" ("id", "name", "guard_name", "created_at", "updated_at") VALUES (3, 'wali', 'web', '2026-08-17 23:50:06', '2026-08-17 23:50:06') ON CONFLICT DO NOTHING;
+-- Enable UUID Extension if needed
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Data for table: model_has_roles
-INSERT INTO "model_has_roles" ("role_id", "model_type", "model_id") VALUES (1, 'App\Models\User', 1) ON CONFLICT DO NOTHING;
-INSERT INTO "model_has_roles" ("role_id", "model_type", "model_id") VALUES (2, 'App\Models\User', 2) ON CONFLICT DO NOTHING;
-INSERT INTO "model_has_roles" ("role_id", "model_type", "model_id") VALUES (3, 'App\Models\User', 3) ON CONFLICT DO NOTHING;
-INSERT INTO "model_has_roles" ("role_id", "model_type", "model_id") VALUES (2, 'App\Models\User', 4) ON CONFLICT DO NOTHING;
-
--- Data for table: sqr_locations
-INSERT INTO "sqr_locations" ("id", "name", "code", "address", "latitude", "longitude", "radius_meters", "is_active", "created_at", "updated_at") VALUES (1, 'SQR Utama (Sukatani, Tapos Depok)', 'SQR-UTAMA', 'Jl. Puri Kemang Permai No.85, RT.002/008, Sukatani, Tapos Depok', '-6.393733', 106.878266, 30, 1, '2026-08-20 17:01:30', '2026-08-20 17:28:51') ON CONFLICT DO NOTHING;
-INSERT INTO "sqr_locations" ("id", "name", "code", "address", "latitude", "longitude", "radius_meters", "is_active", "created_at", "updated_at") VALUES (2, 'SQR Cabang Tapos', 'SQR-TAPOS', 'Jl. Raya Tapos No. 12, Tapos Depok', '-6.402', 106.882, 150, 1, '2026-08-20 17:01:30', '2026-08-20 17:01:30') ON CONFLICT DO NOTHING;
-INSERT INTO "sqr_locations" ("id", "name", "code", "address", "latitude", "longitude", "radius_meters", "is_active", "created_at", "updated_at") VALUES (3, 'SQR Cabang Cimanggis', 'SQR-CIMANGGIS', 'Jl. Raya Bogor KM 30, Cimanggis Depok', '-6.365', 106.865, 150, 1, '2026-08-20 17:01:30', '2026-08-20 17:01:30') ON CONFLICT DO NOTHING;
-
--- Data for table: classes
-INSERT INTO "classes" ("id", "class_name", "description", "quota", "is_active", "created_at", "updated_at", "start_time", "end_time", "attendance_start_time", "attendance_end_time", "certificate_target", "recommendation_target", "location_id") VALUES (1, 'Kelas Anak (Ummi 1 - 6)', 'Kelas anak 5-12 thn', 30, 1, '2026-08-17 23:50:07', '2026-08-17 23:50:07', '15:30', '17:00', '15:30', '16:15', 100, 50, 1) ON CONFLICT DO NOTHING;
-INSERT INTO "classes" ("id", "class_name", "description", "quota", "is_active", "created_at", "updated_at", "start_time", "end_time", "attendance_start_time", "attendance_end_time", "certificate_target", "recommendation_target", "location_id") VALUES (2, 'Kelas Remaja (Tahfidz Juz 30)', 'Kelas remaja 13-17 thn', 30, 1, '2026-08-17 23:50:07', '2026-08-17 23:50:07', '15:30', '17:00', '15:30', '16:15', 100, 50, 1) ON CONFLICT DO NOTHING;
-INSERT INTO "classes" ("id", "class_name", "description", "quota", "is_active", "created_at", "updated_at", "start_time", "end_time", "attendance_start_time", "attendance_end_time", "certificate_target", "recommendation_target", "location_id") VALUES (3, 'Kelas Dewasa (Tahsin Al-Quran)', 'Kelas dewasa 18+ thn', 30, 1, '2026-08-17 23:50:07', '2026-08-17 23:50:07', '15:30', '17:00', '15:30', '16:15', 100, 50, 1) ON CONFLICT DO NOTHING;
+-- --------------------------------------------------------
+-- Table Structure: users
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "users" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "email_verified_at" TIMESTAMP WITHOUT TIME ZONE,
+    "password" TEXT NOT NULL,
+    "remember_token" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE,
+    "class_id" BIGINT,
+    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "address" TEXT,
+    "photo_url" TEXT,
+    "gender" TEXT NOT NULL DEFAULT 'L',
+    "nik" TEXT,
+    "no_kk" TEXT,
+    "phone" TEXT,
+    "birth_place" TEXT,
+    "birth_date" DATE,
+    "education" TEXT,
+    "is_profile_completed" BIGINT NOT NULL DEFAULT '0',
+    "signature_url" TEXT,
+    "location_id" BIGINT
+);
 
 -- Data for table: users
 INSERT INTO "users" ("id", "name", "email", "email_verified_at", "password", "remember_token", "created_at", "updated_at", "class_id", "is_active", "address", "photo_url", "gender", "nik", "no_kk", "phone", "birth_place", "birth_date", "education", "is_profile_completed", "signature_url", "location_id") VALUES (1, 'Admin Utama SQR', 'admin@sqr.id', NULL, '$2y$12$3iRjbyw5NNOpOMXz0/6LgOrChsUNAsaWpSezkFLINKP/dI9qz6I4O', NULL, '2026-08-17 23:50:07', '2026-08-17 23:50:07', NULL, 1, NULL, NULL, 'L', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 1) ON CONFLICT DO NOTHING;
@@ -31,12 +41,293 @@ INSERT INTO "users" ("id", "name", "email", "email_verified_at", "password", "re
 INSERT INTO "users" ("id", "name", "email", "email_verified_at", "password", "remember_token", "created_at", "updated_at", "class_id", "is_active", "address", "photo_url", "gender", "nik", "no_kk", "phone", "birth_place", "birth_date", "education", "is_profile_completed", "signature_url", "location_id") VALUES (3, 'Bpk. Hendra Pratama', 'wali@sqr.id', NULL, '$2y$12$NMCnNpL1Myr.DpJD3SiQ0uV.OSJz3Jv7ahHg3oAGP0Gcl.SK3MKSG', NULL, '2026-08-17 23:50:07', '2026-08-17 23:50:07', NULL, 1, NULL, NULL, 'L', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 1) ON CONFLICT DO NOTHING;
 INSERT INTO "users" ("id", "name", "email", "email_verified_at", "password", "remember_token", "created_at", "updated_at", "class_id", "is_active", "address", "photo_url", "gender", "nik", "no_kk", "phone", "birth_place", "birth_date", "education", "is_profile_completed", "signature_url", "location_id") VALUES (4, 'Ustadzah Fatimah Az-Zahra, S.Pd.I', 'ustadzah.fatimah@sqr.id', NULL, '$2y$12$jcX871URppJ9xGb7kOHJcejDYEoQOefma9qSylosXbKRgOYULyBnK', NULL, '2026-08-20 16:43:30', '2026-08-20 16:43:50', NULL, 1, NULL, NULL, 'Perempuan', NULL, NULL, 081299887766, NULL, NULL, NULL, 0, NULL, 1) ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: password_reset_tokens
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "password_reset_tokens" (
+    "email" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
+-- --------------------------------------------------------
+-- Table Structure: sessions
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "sessions" (
+    "id" TEXT NOT NULL,
+    "user_id" BIGINT,
+    "ip_address" TEXT,
+    "user_agent" TEXT,
+    "payload" TEXT NOT NULL,
+    "last_activity" BIGINT NOT NULL
+);
+
+-- Data for table: sessions
+INSERT INTO "sessions" ("id", "user_id", "ip_address", "user_agent", "payload", "last_activity") VALUES ('gbqslBM2ugNPXQD2rFGPNU4wgKwvMTxcVZgkc2iS', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJPOU13ampEWHlIM0todWxYMktmdVFnazh1d2UxT09qQWZNWUNsM0VCIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzEyNy4wLjAuMTo4MDAwXC9hZG1pblwvdXNlcnMiLCJyb3V0ZSI6ImFkbWluLnVzZXJzLmluZGV4In0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfSwibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiOjF9', 1788496938) ON CONFLICT DO NOTHING;
+INSERT INTO "sessions" ("id", "user_id", "ip_address", "user_agent", "payload", "last_activity") VALUES ('xQOxvT9zdDkEoWRajStP4Bc3HYJfZGOYkCfprVE8', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT; Windows NT 10.0; id-ID) WindowsPowerShell/5.1.26100.7462', 'eyJfdG9rZW4iOiJWdzViSmVoNWtnZnV3UXllYmZlbGZrd1dvNWhCTUdVVXFXOW1jVTFuIiwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119fQ==', 1788496793) ON CONFLICT DO NOTHING;
+INSERT INTO "sessions" ("id", "user_id", "ip_address", "user_agent", "payload", "last_activity") VALUES ('S4w0dRJkVp4imZgJABR7JWm7EGEailPykMdMGTGG', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJXa2Y5aXlpZ096SzQ0MWRYZTZBM2RmeGZhbVVNMnRQUzM3aHNhYWhRIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzEyNy4wLjAuMTo4MDAwIiwicm91dGUiOiJob21lIn0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfX0=', 1788497013) ON CONFLICT DO NOTHING;
+INSERT INTO "sessions" ("id", "user_id", "ip_address", "user_agent", "payload", "last_activity") VALUES ('Qytf3tA6X84nT9P1PK1E60kFp0DVS3i9fnBWTG7N', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJDTmhOekFxUkk3cTVQQ21iSlNQR2lTWkxqenpVcG4yYWEybDV6ZW9SIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzEyNy4wLjAuMTo4MDAwXC9hcGlcL2FydGlrZWwtbGlzdCIsInJvdXRlIjoiYXBpLmFydGlrZWwifSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119fQ==', 1788496980) ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: cache
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "cache" (
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "expiration" BIGINT NOT NULL
+);
+
+-- --------------------------------------------------------
+-- Table Structure: cache_locks
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "cache_locks" (
+    "key" TEXT NOT NULL,
+    "owner" TEXT NOT NULL,
+    "expiration" BIGINT NOT NULL
+);
+
+-- --------------------------------------------------------
+-- Table Structure: jobs
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "jobs" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "queue" TEXT NOT NULL,
+    "payload" TEXT NOT NULL,
+    "attempts" BIGINT NOT NULL,
+    "reserved_at" BIGINT,
+    "available_at" BIGINT NOT NULL,
+    "created_at" BIGINT NOT NULL
+);
+
+-- --------------------------------------------------------
+-- Table Structure: job_batches
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "job_batches" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "total_jobs" BIGINT NOT NULL,
+    "pending_jobs" BIGINT NOT NULL,
+    "failed_jobs" BIGINT NOT NULL,
+    "failed_job_ids" TEXT NOT NULL,
+    "options" TEXT,
+    "cancelled_at" BIGINT,
+    "created_at" BIGINT NOT NULL,
+    "finished_at" BIGINT
+);
+
+-- --------------------------------------------------------
+-- Table Structure: failed_jobs
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "failed_jobs" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "uuid" TEXT NOT NULL,
+    "connection" TEXT NOT NULL,
+    "queue" TEXT NOT NULL,
+    "payload" TEXT NOT NULL,
+    "exception" TEXT NOT NULL,
+    "failed_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- --------------------------------------------------------
+-- Table Structure: permissions
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "permissions" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "guard_name" TEXT NOT NULL,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
+-- --------------------------------------------------------
+-- Table Structure: roles
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "roles" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "guard_name" TEXT NOT NULL,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
+-- Data for table: roles
+INSERT INTO "roles" ("id", "name", "guard_name", "created_at", "updated_at") VALUES (1, 'admin', 'web', '2026-08-17 23:50:06', '2026-08-17 23:50:06') ON CONFLICT DO NOTHING;
+INSERT INTO "roles" ("id", "name", "guard_name", "created_at", "updated_at") VALUES (2, 'ustadz', 'web', '2026-08-17 23:50:06', '2026-08-17 23:50:06') ON CONFLICT DO NOTHING;
+INSERT INTO "roles" ("id", "name", "guard_name", "created_at", "updated_at") VALUES (3, 'wali', 'web', '2026-08-17 23:50:06', '2026-08-17 23:50:06') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: model_has_permissions
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "model_has_permissions" (
+    "permission_id" BIGSERIAL PRIMARY KEY,
+    "model_type" TEXT NOT NULL,
+    "model_id" BIGSERIAL PRIMARY KEY,
+    PRIMARY KEY ("permission_id", "model_type", "model_id")
+);
+
+-- --------------------------------------------------------
+-- Table Structure: model_has_roles
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "model_has_roles" (
+    "role_id" BIGSERIAL PRIMARY KEY,
+    "model_type" TEXT NOT NULL,
+    "model_id" BIGSERIAL PRIMARY KEY,
+    PRIMARY KEY ("role_id", "model_type", "model_id")
+);
+
+-- Data for table: model_has_roles
+INSERT INTO "model_has_roles" ("role_id", "model_type", "model_id") VALUES (1, 'App\Models\User', 1) ON CONFLICT DO NOTHING;
+INSERT INTO "model_has_roles" ("role_id", "model_type", "model_id") VALUES (2, 'App\Models\User', 2) ON CONFLICT DO NOTHING;
+INSERT INTO "model_has_roles" ("role_id", "model_type", "model_id") VALUES (3, 'App\Models\User', 3) ON CONFLICT DO NOTHING;
+INSERT INTO "model_has_roles" ("role_id", "model_type", "model_id") VALUES (2, 'App\Models\User', 4) ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: role_has_permissions
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "role_has_permissions" (
+    "permission_id" BIGSERIAL PRIMARY KEY,
+    "role_id" BIGSERIAL PRIMARY KEY,
+    PRIMARY KEY ("permission_id", "role_id")
+);
+
+-- --------------------------------------------------------
+-- Table Structure: sqr_locations
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "sqr_locations" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "address" TEXT,
+    "latitude" NUMERIC(15,2) NOT NULL DEFAULT '-6.397637',
+    "longitude" NUMERIC(15,2) NOT NULL DEFAULT '106.877478',
+    "radius_meters" BIGINT NOT NULL DEFAULT '150',
+    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
+-- Data for table: sqr_locations
+INSERT INTO "sqr_locations" ("id", "name", "code", "address", "latitude", "longitude", "radius_meters", "is_active", "created_at", "updated_at") VALUES (1, 'SQR Utama (Sukatani, Tapos Depok)', 'SQR-UTAMA', 'Jl. Puri Kemang Permai No.85, RT.002/008, Sukatani, Tapos Depok', '-6.393733', 106.878266, 30, 1, '2026-08-20 17:01:30', '2026-08-20 17:28:51') ON CONFLICT DO NOTHING;
+INSERT INTO "sqr_locations" ("id", "name", "code", "address", "latitude", "longitude", "radius_meters", "is_active", "created_at", "updated_at") VALUES (2, 'SQR Cabang Tapos', 'SQR-TAPOS', 'Jl. Raya Tapos No. 12, Tapos Depok', '-6.402', 106.882, 150, 1, '2026-08-20 17:01:30', '2026-08-20 17:01:30') ON CONFLICT DO NOTHING;
+INSERT INTO "sqr_locations" ("id", "name", "code", "address", "latitude", "longitude", "radius_meters", "is_active", "created_at", "updated_at") VALUES (3, 'SQR Cabang Cimanggis', 'SQR-CIMANGGIS', 'Jl. Raya Bogor KM 30, Cimanggis Depok', '-6.365', 106.865, 150, 1, '2026-08-20 17:01:30', '2026-08-20 17:01:30') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: classes
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "classes" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "class_name" TEXT NOT NULL,
+    "description" TEXT,
+    "quota" BIGINT NOT NULL DEFAULT '30',
+    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE,
+    "start_time" TEXT NOT NULL DEFAULT '15:30',
+    "end_time" TEXT NOT NULL DEFAULT '17:00',
+    "attendance_start_time" TEXT NOT NULL DEFAULT '15:30',
+    "attendance_end_time" TEXT NOT NULL DEFAULT '16:15',
+    "certificate_target" BIGINT NOT NULL DEFAULT '100',
+    "recommendation_target" BIGINT NOT NULL DEFAULT '50',
+    "location_id" BIGINT
+);
+
+-- Data for table: classes
+INSERT INTO "classes" ("id", "class_name", "description", "quota", "is_active", "created_at", "updated_at", "start_time", "end_time", "attendance_start_time", "attendance_end_time", "certificate_target", "recommendation_target", "location_id") VALUES (1, 'Kelas Anak (Ummi 1 - 6)', 'Kelas anak 5-12 thn', 30, 1, '2026-08-17 23:50:07', '2026-08-17 23:50:07', '15:30', '17:00', '15:30', '16:15', 100, 50, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "classes" ("id", "class_name", "description", "quota", "is_active", "created_at", "updated_at", "start_time", "end_time", "attendance_start_time", "attendance_end_time", "certificate_target", "recommendation_target", "location_id") VALUES (2, 'Kelas Remaja (Tahfidz Juz 30)', 'Kelas remaja 13-17 thn', 30, 1, '2026-08-17 23:50:07', '2026-08-17 23:50:07', '15:30', '17:00', '15:30', '16:15', 100, 50, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "classes" ("id", "class_name", "description", "quota", "is_active", "created_at", "updated_at", "start_time", "end_time", "attendance_start_time", "attendance_end_time", "certificate_target", "recommendation_target", "location_id") VALUES (3, 'Kelas Dewasa (Tahsin Al-Quran)', 'Kelas dewasa 18+ thn', 30, 1, '2026-08-17 23:50:07', '2026-08-17 23:50:07', '15:30', '17:00', '15:30', '16:15', 100, 50, 1) ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: santri
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "santri" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "full_name" TEXT NOT NULL,
+    "date_of_birth" DATE,
+    "gender" TEXT NOT NULL,
+    "parent_name" TEXT,
+    "phone" TEXT,
+    "wali_user_id" BIGINT,
+    "class_id" BIGINT,
+    "enrollment_date" DATE,
+    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE,
+    "certificate_template" TEXT NOT NULL DEFAULT 'classic',
+    "certificate_issued_at" TIMESTAMP WITHOUT TIME ZONE,
+    "birth_place" TEXT,
+    "address" TEXT
+);
+
 -- Data for table: santri
 INSERT INTO "santri" ("id", "full_name", "date_of_birth", "gender", "parent_name", "phone", "wali_user_id", "class_id", "enrollment_date", "is_active", "created_at", "updated_at", "certificate_template", "certificate_issued_at", "birth_place", "address") VALUES (1, 'Muhammad Rizki Pratama', NULL, 'Laki-laki', 'Bpk. Hendra Pratama', 081293721163, 3, 1, '2026-02-17 23:50:07', 1, '2026-08-17 23:50:07', '2026-08-27 19:01:03', 'elegant', '2026-08-27 19:01:03', NULL, NULL) ON CONFLICT DO NOTHING;
 INSERT INTO "santri" ("id", "full_name", "date_of_birth", "gender", "parent_name", "phone", "wali_user_id", "class_id", "enrollment_date", "is_active", "created_at", "updated_at", "certificate_template", "certificate_issued_at", "birth_place", "address") VALUES (2, 'Aisyah Az-Zahra', NULL, 'Perempuan', 'Bpk. Hendra Pratama', 081293721163, 3, 2, '2026-05-17 23:50:18', 1, '2026-08-17 23:50:18', '2026-08-27 18:37:26', 'classic', NULL, NULL, NULL) ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: ppdb
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "ppdb" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "nama_ayah" TEXT,
+    "nama_ibu" TEXT,
+    "pekerjaan_ayah" TEXT,
+    "pekerjaan_ibu" TEXT,
+    "no_hp_ayah" TEXT,
+    "no_hp_ibu" TEXT,
+    "penghasilan_bulanan" TEXT,
+    "nama_lengkap" TEXT NOT NULL,
+    "tempat_lahir" TEXT,
+    "tanggal_lahir" DATE,
+    "anak_ke" BIGINT,
+    "jumlah_saudara" BIGINT,
+    "sekolah_asal" TEXT,
+    "gender" TEXT NOT NULL,
+    "email" TEXT,
+    "no_telephone" TEXT,
+    "alamat" TEXT,
+    "rt" TEXT,
+    "rw" TEXT,
+    "desa_kelurahan" TEXT,
+    "kota" TEXT,
+    "kelas_diminati" BIGINT,
+    "status" TEXT NOT NULL DEFAULT 'Pending',
+    "catatan_admin" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
+-- --------------------------------------------------------
+-- Table Structure: student_progress
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "student_progress" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "santri_id" BIGINT NOT NULL,
+    "date" DATE NOT NULL,
+    "juz_start" BIGINT,
+    "juz_end" BIGINT,
+    "surah_memorized" TEXT,
+    "notes" TEXT,
+    "ustadz_user_id" BIGINT,
+    "type" TEXT NOT NULL DEFAULT 'Tahfiz',
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
 -- Data for table: student_progress
 INSERT INTO "student_progress" ("id", "santri_id", "date", "juz_start", "juz_end", "surah_memorized", "notes", "ustadz_user_id", "type", "created_at", "updated_at") VALUES (1, 1, '2026-08-17 23:50:18', 1, 30, 'An-Nas', '⭐ Predikat: Mumtaz (Sangat Lancar) | Lulus mutqin 30 Juz', 2, 'Tahfiz', '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: payments
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "payments" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "santri_id" BIGINT NOT NULL,
+    "month_year" TEXT NOT NULL,
+    "amount" BIGINT NOT NULL DEFAULT '0',
+    "status" TEXT NOT NULL DEFAULT 'Unpaid',
+    "notes" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
 
 -- Data for table: payments
 INSERT INTO "payments" ("id", "santri_id", "month_year", "amount", "status", "notes", "created_at", "updated_at") VALUES (1, 1, '2025-01', 150000, 'Verified', 'SPP Lunas Otomatis Dummy - Bulan 2025-01', '2026-08-20 15:14:00', '2026-08-20 15:14:00') ON CONFLICT DO NOTHING;
@@ -89,6 +380,22 @@ INSERT INTO "payments" ("id", "santri_id", "month_year", "amount", "status", "no
 INSERT INTO "payments" ("id", "santri_id", "month_year", "amount", "status", "notes", "created_at", "updated_at") VALUES (48, 2, '2026-12', 150000, 'Verified', 'SPP Lunas Otomatis Dummy - Bulan 2026-12', '2026-08-20 15:14:00', '2026-08-20 15:14:00') ON CONFLICT DO NOTHING;
 INSERT INTO "payments" ("id", "santri_id", "month_year", "amount", "status", "notes", "created_at", "updated_at") VALUES (49, 1, 'Agustus 2026', 150000, 'Verified', 'Pembayaran SPP Syahriyah Agustus 2026', '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: payment_verifications
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "payment_verifications" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "payment_id" BIGINT NOT NULL,
+    "wali_user_id" BIGINT,
+    "proof_image_path" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'Pending',
+    "admin_notes" TEXT,
+    "verified_by" BIGINT,
+    "verified_at" TIMESTAMP WITHOUT TIME ZONE,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
 -- Data for table: payment_verifications
 INSERT INTO "payment_verifications" ("id", "payment_id", "wali_user_id", "proof_image_path", "status", "admin_notes", "verified_by", "verified_at", "created_at", "updated_at") VALUES (1, 1, 3, 'https://res.cloudinary.com/ddh5nkwv7/image/upload/v1787211352/ttd-removebg-preview_igneun.png', 'Verified', 'Pembayaran terverifikasi otomatis oleh sistem (Lunas)', 1, '2026-08-20 15:14:00', '2026-08-20 15:14:00', '2026-08-20 15:14:00') ON CONFLICT DO NOTHING;
 INSERT INTO "payment_verifications" ("id", "payment_id", "wali_user_id", "proof_image_path", "status", "admin_notes", "verified_by", "verified_at", "created_at", "updated_at") VALUES (2, 2, 3, 'https://res.cloudinary.com/ddh5nkwv7/image/upload/v1787211352/ttd-removebg-preview_igneun.png', 'Verified', 'Pembayaran terverifikasi otomatis oleh sistem (Lunas)', 1, '2026-08-20 15:14:00', '2026-08-20 15:14:00', '2026-08-20 15:14:00') ON CONFLICT DO NOTHING;
@@ -139,14 +446,57 @@ INSERT INTO "payment_verifications" ("id", "payment_id", "wali_user_id", "proof_
 INSERT INTO "payment_verifications" ("id", "payment_id", "wali_user_id", "proof_image_path", "status", "admin_notes", "verified_by", "verified_at", "created_at", "updated_at") VALUES (47, 47, 3, 'https://res.cloudinary.com/ddh5nkwv7/image/upload/v1787211352/ttd-removebg-preview_igneun.png', 'Verified', 'Pembayaran terverifikasi otomatis oleh sistem (Lunas)', 1, '2026-08-20 15:14:00', '2026-08-20 15:14:00', '2026-08-20 15:14:00') ON CONFLICT DO NOTHING;
 INSERT INTO "payment_verifications" ("id", "payment_id", "wali_user_id", "proof_image_path", "status", "admin_notes", "verified_by", "verified_at", "created_at", "updated_at") VALUES (48, 48, 3, 'https://res.cloudinary.com/ddh5nkwv7/image/upload/v1787211352/ttd-removebg-preview_igneun.png', 'Verified', 'Pembayaran terverifikasi otomatis oleh sistem (Lunas)', 1, '2026-08-20 15:14:00', '2026-08-20 15:14:00', '2026-08-20 15:14:00') ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: income
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "income" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "amount" BIGINT NOT NULL,
+    "date" DATE NOT NULL,
+    "category" TEXT,
+    "recorded_by" BIGINT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
 -- Data for table: income
 INSERT INTO "income" ("id", "title", "description", "amount", "date", "category", "recorded_by", "created_at", "updated_at") VALUES (1, 'Infaq Kotak Jumat Berkah SQR', 'Hasil perolehan kotak infaq jamaah Jumat', 750000, '2026-08-18 00:00:00', NULL, NULL, '2026-08-20 17:36:18', '2026-08-20 17:36:18') ON CONFLICT DO NOTHING;
 INSERT INTO "income" ("id", "title", "description", "amount", "date", "category", "recorded_by", "created_at", "updated_at") VALUES (2, 'Hamba Allah - Ta''awun Operasional SQR', 'Transfer ta''awun donatur tetap bulanan', 1500000, '2026-08-15 00:00:00', NULL, NULL, '2026-08-20 17:36:18', '2026-08-20 17:36:18') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: expenses
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "expenses" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "amount" BIGINT NOT NULL,
+    "date" DATE NOT NULL,
+    "category" TEXT,
+    "recorded_by" BIGINT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
 
 -- Data for table: expenses
 INSERT INTO "expenses" ("id", "title", "description", "amount", "date", "category", "recorded_by", "created_at", "updated_at") VALUES (1, 'Snack & Konsumsi Pengajian Wali Santri', 'Pembelian kue & minuman kajian bulanan', 350000, '2026-08-17 00:00:00', 'Konsumsi & Acara', NULL, '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
 INSERT INTO "expenses" ("id", "title", "description", "amount", "date", "category", "recorded_by", "created_at", "updated_at") VALUES (2, 'Program Jumat Berbagi - Paket Nasi Berkah', 'Pembagian 50 paket nasi bungkus untuk warga sekitar SQR', 500000, '2026-08-14 00:00:00', 'Program Sosial & Sumbangan', NULL, '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
 INSERT INTO "expenses" ("id", "title", "description", "amount", "date", "category", "recorded_by", "created_at", "updated_at") VALUES (3, 'Hadiah & Sertifikat Lomba Hafalan Santri', 'Piala & bingkisan santri berprestasi', 450000, '2026-08-10 00:00:00', 'Kegiatan Santri', NULL, '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: content_manager
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "content_manager" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "key" TEXT NOT NULL,
+    "value" TEXT,
+    "type" TEXT NOT NULL DEFAULT 'text',
+    "updated_by" BIGINT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
 
 -- Data for table: content_manager
 INSERT INTO "content_manager" ("id", "key", "value", "type", "updated_by", "created_at", "updated_at") VALUES (1, 'home_tagline', 'Pondasi Quran Generasi Rabbani', 'text', NULL, '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
@@ -154,15 +504,107 @@ INSERT INTO "content_manager" ("id", "key", "value", "type", "updated_by", "crea
 INSERT INTO "content_manager" ("id", "key", "value", "type", "updated_by", "created_at", "updated_at") VALUES (3, 'stat_pengajar', '8+', 'text', NULL, '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
 INSERT INTO "content_manager" ("id", "key", "value", "type", "updated_by", "created_at", "updated_at") VALUES (4, 'stat_tahun', '7th', 'text', NULL, '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: sqr_notifications
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "sqr_notifications" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "user_id" BIGINT,
+    "title" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
+    "is_read" BIGINT NOT NULL DEFAULT '0',
+    "type" TEXT NOT NULL DEFAULT 'info',
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE,
+    "target_role" TEXT
+);
+
+-- Data for table: sqr_notifications
+INSERT INTO "sqr_notifications" ("id", "user_id", "title", "message", "is_read", "type", "created_at", "updated_at", "target_role") VALUES (1, NULL, '💻 Pengumuman KBM Daring (Online) - Kelas Anak (Ummi 1 - 6)', 'Kelas Kelas Anak (Ummi 1 - 6) hari ini (20 Aug 2026) dilaksanakan secara DARING (Online Zoom/Meet) mulai pukul 16:00 WIB. Link Pertemuan: https://meet.google.com/test-link', 0, 'online_class', '2026-08-20 17:10:54', '2026-08-20 17:10:54', 'wali') ON CONFLICT DO NOTHING;
+INSERT INTO "sqr_notifications" ("id", "user_id", "title", "message", "is_read", "type", "created_at", "updated_at", "target_role") VALUES (2, 3, '💻 KBM Daring (Online) - Kelas Anak (Ummi 1 - 6)', 'Kelas Kelas Anak (Ummi 1 - 6) hari ini dilaksanakan DARING di https://meet.google.com/sqr-online-class . Harap hadir tepat waktu.', 0, 'online_class', '2026-08-27 18:37:26', '2026-08-27 18:37:26', 'wali') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: audit_log
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "audit_log" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "user_id" BIGINT,
+    "action" TEXT NOT NULL,
+    "model_type" TEXT,
+    "model_id" BIGINT,
+    "old_values" TEXT,
+    "new_values" TEXT,
+    "ip_address" TEXT,
+    "user_agent" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
+-- --------------------------------------------------------
+-- Table Structure: articles
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "articles" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "excerpt" TEXT,
+    "content" TEXT NOT NULL,
+    "image_url" TEXT,
+    "is_published" BIGINT NOT NULL DEFAULT '0',
+    "published_at" TIMESTAMP WITHOUT TIME ZONE,
+    "author_id" BIGINT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE,
+    "category" TEXT NOT NULL DEFAULT 'Kegiatan',
+    "media_url" TEXT
+);
+
 -- Data for table: articles
 INSERT INTO "articles" ("id", "title", "slug", "excerpt", "content", "image_url", "is_published", "published_at", "author_id", "created_at", "updated_at", "category", "media_url") VALUES (1, 'Metode Pembelajaran Ummi Jilid 1', 'metode-pembelajaran-ummi-jilid-1-xh7k', 'Panduan dasar pembelajaran Al-Quran dengan metode Ummi yang menyenangkan bagi santri anak-anak.', 'Metode Ummi merupakan salah satu metode pembelajaran membaca Al-Quran yang berorientasi pada kualitas bacaan dan kemudahan pemahaman santri secara bertahap.', NULL, 1, '2026-08-17 23:50:18', 1, '2026-08-17 23:50:18', '2026-08-17 23:50:18', 'Kegiatan', 'https://youtu.be/SNRYDkaVrms?si=2DrIKGt6J1xw04wW') ON CONFLICT DO NOTHING;
 INSERT INTO "articles" ("id", "title", "slug", "excerpt", "content", "image_url", "is_published", "published_at", "author_id", "created_at", "updated_at", "category", "media_url") VALUES (2, 'Persiapan Santri Menghadapi Ramadhan 1447H', 'persiapan-santri-menghadapi-ramadhan-1447h', 'Tips dan panduan menjaga hafalan Quran serta kedisiplinan beribadah di bulan suci Ramadhan.', 'Bulan Ramadhan adalah momen emas bagi santri Saung Quran Rabbani untuk melipatgandakan muraja''ah dan memperkuat target tahfidz.', NULL, 1, '2026-08-17 23:50:18', 1, '2026-08-17 23:50:18', '2026-08-17 23:50:18', 'Kajian', 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=1200&auto=format&fit=crop') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: campaigns
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "campaigns" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "category" TEXT NOT NULL DEFAULT 'Sosial & Ta''awun',
+    "target_amount" NUMERIC(15,2) NOT NULL DEFAULT '0',
+    "current_amount" NUMERIC(15,2) NOT NULL DEFAULT '0',
+    "excerpt" TEXT,
+    "description" TEXT,
+    "image_url" TEXT,
+    "bank_name" TEXT NOT NULL DEFAULT 'Bank Syariah Indonesia (BSI)',
+    "bank_account" TEXT NOT NULL DEFAULT '7289-0123-45',
+    "bank_holder" TEXT NOT NULL DEFAULT 'Yayasan Bina Cahaya Ilmu Rabbani',
+    "is_active" BIGINT NOT NULL DEFAULT '1',
+    "end_date" DATE,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
 
 -- Data for table: campaigns
 INSERT INTO "campaigns" ("id", "title", "slug", "category", "target_amount", "current_amount", "excerpt", "description", "image_url", "bank_name", "bank_account", "bank_holder", "is_active", "end_date", "created_at", "updated_at") VALUES (1, 'Program Jumat Berbagi & Ta''awun Santri', 'jumat-berbagi-taawun-santri', 'Program Rutin', 5000000, 3750000, 'Penyediaan makanan bergizi & snack sehat setiap Jumat untuk santri usai kegiatan KBM Al-Quran.', 'Program Jumat Berbagi dan Ta''awun Santri bertujuan untuk menghadirkan kebahagiaan bagi para penghafal Al-Quran melalui hidangan Jumat berkah, bingkisan apresiasi hafalan, dan dukungan sarana belajar santri yatim & dhuafa.', 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&auto=format&fit=crop', 'Bank Syariah Indonesia (BSI)', '7289-0123-45', 'Yayasan Bina Cahaya Ilmu Rabbani', 1, '2026-09-16 23:50:18', '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
 INSERT INTO "campaigns" ("id", "title", "slug", "category", "target_amount", "current_amount", "excerpt", "description", "image_url", "bank_name", "bank_account", "bank_holder", "is_active", "end_date", "created_at", "updated_at") VALUES (2, 'Wakaf 100 Mus-haf Al-Quran Hafalan Santri', 'wakaf-100-al-quran-hafalan', 'Wakaf Quran', 8500000, 6200000, 'Pengadaan mus-haf hafalan standar Tajwid berwarna untuk santri baru Saung Quran Rabbani.', 'Wakaf Al-Quran hafalan merupakan sedekah jariyah yang terus mengalirkan pahala setiap kali setiap ayat Al-Quran dibaca dan dihafal oleh para santri SQR.', 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=1200&auto=format&fit=crop', 'Bank Syariah Indonesia (BSI)', '7289-0123-45', 'Yayasan Bina Cahaya Ilmu Rabbani', 1, '2026-10-01 23:50:18', '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
 INSERT INTO "campaigns" ("id", "title", "slug", "category", "target_amount", "current_amount", "excerpt", "description", "image_url", "bank_name", "bank_account", "bank_holder", "is_active", "end_date", "created_at", "updated_at") VALUES (3, 'Renovasi & Karpet Sajadah Saung Quran', 'renovasi-sarana-saung-quran', 'Fasilitas', 12000000, 4500000, 'Pengadaan karpet tebal & perbaikan pendingin ruangan kelas belajar santri agar lebih khusyu''.', 'Kenyamanan tempat belajar Al-Quran sangat memengaruhi konsentrasi santri saat menghafal. Donasi ini digunakan untuk pembelian karpet empuk dan perbaikan pendingin ruangan kelas.', 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1200&auto=format&fit=crop', 'Bank Syariah Indonesia (BSI)', '7289-0123-45', 'Yayasan Bina Cahaya Ilmu Rabbani', 1, '2026-10-16 23:50:18', '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
 INSERT INTO "campaigns" ("id", "title", "slug", "category", "target_amount", "current_amount", "excerpt", "description", "image_url", "bank_name", "bank_account", "bank_holder", "is_active", "end_date", "created_at", "updated_at") VALUES (4, 'Pembangunan Ruang Kelas Tahfidz SQR Utama', 'pembangunan-ruang-kelas-tahfidz-sqr', 'Pembangunan & Fasilitas', 50000000, 12500000, 'Bantu wujudkan kelas nyaman untuk para penghafal Al-Quran.', 'Program renovasi dan penambahan 2 ruang kelas belajar santri.', 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&auto=format&fit=crop', 'Bank Syariah Indonesia (BSI)', '7289-0123-45', 'Yayasan Bina Cahaya Ilmu Rabbani', 1, NULL, '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: galleries
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "galleries" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "category" TEXT NOT NULL DEFAULT 'KBM Santri',
+    "image_url" TEXT NOT NULL,
+    "description" TEXT,
+    "event_date" DATE,
+    "is_featured" BIGINT NOT NULL DEFAULT '1',
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
 
 -- Data for table: galleries
 INSERT INTO "galleries" ("id", "title", "category", "image_url", "description", "event_date", "is_featured", "created_at", "updated_at") VALUES (1, 'Kegiatan KBM Santri Ummi Jilid 1-6', 'KBM Santri', 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1200&auto=format&fit=crop', 'Suasana bimbingan privat membaca Al-Quran santri anak usia dini dengan ustadz pengajar.', '2026-08-12 23:50:18', 1, '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
@@ -172,15 +614,50 @@ INSERT INTO "galleries" ("id", "title", "category", "image_url", "description", 
 INSERT INTO "galleries" ("id", "title", "category", "image_url", "description", "event_date", "is_featured", "created_at", "updated_at") VALUES (5, 'Kajian Tematik Parenting Quran', 'Kajian', 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1200&auto=format&fit=crop', 'Kajian bulanan wali santri bersama ustadz pembina mengenai kurikulum pengajaran di rumah.', '2026-08-02 23:50:18', 1, '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
 INSERT INTO "galleries" ("id", "title", "category", "image_url", "description", "event_date", "is_featured", "created_at", "updated_at") VALUES (6, 'Wisuda & Haflah Akhir Sanah Tahfidz', 'Wisuda', 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop', 'Penyerahan sertifikat kelulusan dan penyerahan mahkota untuk orang tua santri mutqin.', '2026-07-18 23:50:18', 1, '2026-08-17 23:50:18', '2026-08-17 23:50:18') ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: donations
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "donations" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "campaign_id" BIGINT NOT NULL,
+    "donor_name" TEXT NOT NULL,
+    "donor_phone" TEXT,
+    "donor_email" TEXT,
+    "amount" NUMERIC(15,2) NOT NULL,
+    "payment_method" TEXT NOT NULL DEFAULT 'Transfer Bank BSI',
+    "status" TEXT NOT NULL DEFAULT 'Paid',
+    "notes" TEXT,
+    "proof_image" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
 -- Data for table: donations
 INSERT INTO "donations" ("id", "campaign_id", "donor_name", "donor_phone", "donor_email", "amount", "payment_method", "status", "notes", "proof_image", "created_at", "updated_at") VALUES (1, 4, 'H. Abdullah', 081229885459, 'h.abdullah@gmail.com', 5000000, 'Transfer BSI', 'Paid', 'Wakaf tunai semen & bata', NULL, '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
 INSERT INTO "donations" ("id", "campaign_id", "donor_name", "donor_phone", "donor_email", "amount", "payment_method", "status", "notes", "proof_image", "created_at", "updated_at") VALUES (2, 4, 'Hj. Siti Rahmah', 081235034970, 'hj.sitirahmah@gmail.com', 2500000, 'Transfer Mandiri', 'Paid', 'Donasi fasilitas meja santri', NULL, '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
 INSERT INTO "donations" ("id", "campaign_id", "donor_name", "donor_phone", "donor_email", "amount", "payment_method", "status", "notes", "proof_image", "created_at", "updated_at") VALUES (3, 4, 'Bpk. Hendra Wijaya', 081214618180, 'bpk.hendrawijaya@gmail.com', 3000000, 'QRIS Yayasan', 'Paid', 'Sedekah subuh pembangunan', NULL, '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
 INSERT INTO "donations" ("id", "campaign_id", "donor_name", "donor_phone", "donor_email", "amount", "payment_method", "status", "notes", "proof_image", "created_at", "updated_at") VALUES (4, 4, 'Ibu Nurlaila', 081224329556, 'ibunurlaila@gmail.com', 2000000, 'Transfer BSI', 'Paid', 'Infaq karpet kelas', NULL, '2026-08-20 17:36:24', '2026-08-20 17:36:24') ON CONFLICT DO NOTHING;
 
--- Data for table: sqr_notifications
-INSERT INTO "sqr_notifications" ("id", "user_id", "title", "message", "is_read", "type", "created_at", "updated_at", "target_role") VALUES (1, NULL, '💻 Pengumuman KBM Daring (Online) - Kelas Anak (Ummi 1 - 6)', 'Kelas Kelas Anak (Ummi 1 - 6) hari ini (20 Aug 2026) dilaksanakan secara DARING (Online Zoom/Meet) mulai pukul 16:00 WIB. Link Pertemuan: https://meet.google.com/test-link', 0, 'online_class', '2026-08-20 17:10:54', '2026-08-20 17:10:54', 'wali') ON CONFLICT DO NOTHING;
-INSERT INTO "sqr_notifications" ("id", "user_id", "title", "message", "is_read", "type", "created_at", "updated_at", "target_role") VALUES (2, 3, '💻 KBM Daring (Online) - Kelas Anak (Ummi 1 - 6)', 'Kelas Kelas Anak (Ummi 1 - 6) hari ini dilaksanakan DARING di https://meet.google.com/sqr-online-class . Harap hadir tepat waktu.', 0, 'online_class', '2026-08-27 18:37:26', '2026-08-27 18:37:26', 'wali') ON CONFLICT DO NOTHING;
+-- --------------------------------------------------------
+-- Table Structure: ustadz_attendance
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "ustadz_attendance" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "ustadz_id" BIGINT NOT NULL,
+    "date" DATE NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'Hadir',
+    "check_in_time" TEXT,
+    "notes" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE,
+    "substitute_ustadz_id" BIGINT,
+    "online_meeting_link" TEXT,
+    "online_start_time" TEXT,
+    "latitude" NUMERIC(15,2),
+    "longitude" NUMERIC(15,2),
+    "distance_meters" BIGINT,
+    "is_within_radius" BIGINT NOT NULL DEFAULT '1'
+);
 
 -- Data for table: ustadz_attendance
 INSERT INTO "ustadz_attendance" ("id", "ustadz_id", "date", "status", "check_in_time", "notes", "created_at", "updated_at", "substitute_ustadz_id", "online_meeting_link", "online_start_time", "latitude", "longitude", "distance_meters", "is_within_radius") VALUES (1, 2, '2026-08-17 00:00:00', 'Hadir', '23:54:08', NULL, '2026-08-17 23:54:08', '2026-08-17 23:54:08', NULL, NULL, NULL, NULL, NULL, NULL, 1) ON CONFLICT DO NOTHING;
@@ -189,8 +666,35 @@ INSERT INTO "ustadz_attendance" ("id", "ustadz_id", "date", "status", "check_in_
 INSERT INTO "ustadz_attendance" ("id", "ustadz_id", "date", "status", "check_in_time", "notes", "created_at", "updated_at", "substitute_ustadz_id", "online_meeting_link", "online_start_time", "latitude", "longitude", "distance_meters", "is_within_radius") VALUES (4, 4, '2026-08-20 00:00:00', 'Hadir', '08:00:00', 'Presensi HADIR Ustadzah Pengganti Aktif Hari Ini', '2026-08-20 16:43:50', '2026-08-20 16:43:50', NULL, NULL, NULL, NULL, NULL, NULL, 1) ON CONFLICT DO NOTHING;
 INSERT INTO "ustadz_attendance" ("id", "ustadz_id", "date", "status", "check_in_time", "notes", "created_at", "updated_at", "substitute_ustadz_id", "online_meeting_link", "online_start_time", "latitude", "longitude", "distance_meters", "is_within_radius") VALUES (5, 2, '2026-08-27 00:00:00', 'Hadir', '18:20:53', 'KBM Tatap Muka SQR Utama', '2026-08-27 18:20:53', '2026-08-27 18:37:26', NULL, 'https://meet.google.com/sqr-online-class', '16:00', NULL, NULL, NULL, 1) ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: santri_attendance
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "santri_attendance" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "santri_id" BIGINT NOT NULL,
+    "class_id" BIGINT NOT NULL,
+    "date" DATE NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'Hadir',
+    "recorded_by" BIGINT,
+    "notes" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE,
+    "substitute_ustadz_id" BIGINT
+);
+
 -- Data for table: santri_attendance
 INSERT INTO "santri_attendance" ("id", "santri_id", "class_id", "date", "status", "recorded_by", "notes", "created_at", "updated_at", "substitute_ustadz_id") VALUES (1, 2, 1, '2026-08-18 00:00:00', 'Hadir', 2, NULL, '2026-08-18 07:05:46', '2026-08-18 07:05:46', NULL) ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: organization_settings
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "organization_settings" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "key" TEXT NOT NULL,
+    "value" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
 
 -- Data for table: organization_settings
 INSERT INTO "organization_settings" ("id", "key", "value", "created_at", "updated_at") VALUES (1, 'organization_name', 'Saung Quran Rabbani', '2026-08-20 14:16:11', '2026-08-20 14:16:11') ON CONFLICT DO NOTHING;
@@ -208,6 +712,17 @@ INSERT INTO "organization_settings" ("id", "key", "value", "created_at", "update
 INSERT INTO "organization_settings" ("id", "key", "value", "created_at", "updated_at") VALUES (13, 'yayasan_logo_url', 'https://res.cloudinary.com/ddh5nkwv7/image/upload/v1787212253/WhatsApp_Image_2024-03-05_at_16.45.18__1_-removebg-preview_1_n7ggrp.png', '2026-08-20 14:51:51', '2026-08-20 14:51:51') ON CONFLICT DO NOTHING;
 INSERT INTO "organization_settings" ("id", "key", "value", "created_at", "updated_at") VALUES (14, 'ustadz_signature_url', '', '2026-08-20 14:51:51', '2026-08-20 14:51:51') ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: school_schedules
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "school_schedules" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "key" TEXT NOT NULL,
+    "value" TEXT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
 -- Data for table: school_schedules
 INSERT INTO "school_schedules" ("id", "key", "value", "created_at", "updated_at") VALUES (1, 'jam_masuk', '16:00', '2026-08-20 15:28:07', '2026-08-20 15:56:44') ON CONFLICT DO NOTHING;
 INSERT INTO "school_schedules" ("id", "key", "value", "created_at", "updated_at") VALUES (2, 'jam_pulang', '17:30', '2026-08-20 15:28:07', '2026-08-20 15:56:44') ON CONFLICT DO NOTHING;
@@ -215,9 +730,43 @@ INSERT INTO "school_schedules" ("id", "key", "value", "created_at", "updated_at"
 INSERT INTO "school_schedules" ("id", "key", "value", "created_at", "updated_at") VALUES (4, 'nama_sekolah', 'Saung Quran Rabbani', '2026-08-20 15:28:07', '2026-08-20 15:28:07') ON CONFLICT DO NOTHING;
 INSERT INTO "school_schedules" ("id", "key", "value", "created_at", "updated_at") VALUES (5, 'kelas_mulai_tanggal', '2026-01-01', '2026-08-20 15:28:07', '2026-08-20 15:28:07') ON CONFLICT DO NOTHING;
 
+-- --------------------------------------------------------
+-- Table Structure: school_events
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "school_events" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "date" DATE NOT NULL,
+    "date_end" DATE,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "type" TEXT NOT NULL DEFAULT 'pengumuman',
+    "is_holiday" BIGINT NOT NULL DEFAULT '0',
+    "online_link" TEXT,
+    "online_start_time" TEXT,
+    "class_id" BIGINT,
+    "created_by" BIGINT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
+
 -- Data for table: school_events
 INSERT INTO "school_events" ("id", "date", "date_end", "title", "description", "type", "is_holiday", "online_link", "online_start_time", "class_id", "created_by", "created_at", "updated_at") VALUES (1, '2026-08-17 00:00:00', NULL, 'Libur Kemerdekaan RI ke-81', 'Memperingati Hari Kemerdekaan Republik Indonesia, kegiatan belajar mengajar diliburkan.', 'libur', 1, NULL, NULL, NULL, 1, '2026-08-20 16:03:07', '2026-08-20 16:03:07') ON CONFLICT DO NOTHING;
 INSERT INTO "school_events" ("id", "date", "date_end", "title", "description", "type", "is_holiday", "online_link", "online_start_time", "class_id", "created_by", "created_at", "updated_at") VALUES (2, '2026-08-23 00:00:00', NULL, 'Kajian Parenting & Quran Bulan Ini', 'Kajian bulanan khusus Wali Santri bersama Pembina Yayasan. Harap hadir pukul 16:00 WIB.', 'acara', 0, NULL, NULL, NULL, 1, '2026-08-20 16:03:07', '2026-08-20 16:03:07') ON CONFLICT DO NOTHING;
 INSERT INTO "school_events" ("id", "date", "date_end", "title", "description", "type", "is_holiday", "online_link", "online_start_time", "class_id", "created_by", "created_at", "updated_at") VALUES (3, '2026-08-27 00:00:00', NULL, 'Kelas Online Pengganti (Zoom)', 'Kelas online via Zoom menggantikan pertemuan tatap muka.', 'online', 0, 'https://meet.google.com/sqr-online-001', '16:00:00', NULL, 1, '2026-08-20 16:03:07', '2026-08-20 16:03:07') ON CONFLICT DO NOTHING;
 INSERT INTO "school_events" ("id", "date", "date_end", "title", "description", "type", "is_holiday", "online_link", "online_start_time", "class_id", "created_by", "created_at", "updated_at") VALUES (4, '2026-09-01 00:00:00', '2026-09-03 00:00:00', 'Pesantren Kilat & Mabit Santri', 'Kegiatan Sanlat dan Malam Bina Iman Taqwa (MABIT) untuk seluruh santri SQR.', 'acara', 0, NULL, NULL, NULL, 1, '2026-08-20 16:03:07', '2026-08-20 16:03:07') ON CONFLICT DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table Structure: ustadz_payroll_bonuses
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS "ustadz_payroll_bonuses" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "ustadz_id" BIGINT NOT NULL,
+    "month" BIGINT NOT NULL,
+    "year" BIGINT NOT NULL,
+    "bonus_amount" NUMERIC(15,2) NOT NULL DEFAULT '0',
+    "bonus_note" TEXT,
+    "created_by" BIGINT,
+    "created_at" TIMESTAMP WITHOUT TIME ZONE,
+    "updated_at" TIMESTAMP WITHOUT TIME ZONE
+);
 
