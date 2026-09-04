@@ -112,6 +112,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::put('lokasi/{location}', [Admin\LocationController::class, 'update'])->name('locations.update');
     Route::post('lokasi/assign-ustadz', [Admin\LocationController::class, 'assignUstadz'])->name('locations.assignUstadz');
     Route::delete('lokasi/{location}', [Admin\LocationController::class, 'destroy'])->name('locations.destroy');
+
+    // Mode Maintenance (Admin Only)
+    Route::post('maintenance/toggle', [Admin\MaintenanceController::class, 'toggle'])->name('maintenance.toggle');
+    Route::get('maintenance/status', [Admin\MaintenanceController::class, 'status'])->name('maintenance.status');
 });
 
 // ─── Public API: Jadwal Events (for calendar JS) ────────────

@@ -21,6 +21,221 @@
         </a>
     </div>
 
+    <!-- ⚙️ Maintenance Mode Control Widget -->
+    @php
+        $isMaintenance = (bool) \App\Models\OrganizationSetting::get('maintenance_mode', '0');
+        $maintenanceMsg = \App\Models\OrganizationSetting::get('maintenance_message', '');
+    @endphp
+
+    <div id="maintenanceWidget" class="rounded-3xl p-5 shadow-lg border-2 transition-all duration-500
+        {{ $isMaintenance
+            ? 'bg-gradient-to-r from-red-900 via-red-800 to-red-900 border-red-600 text-white'
+            : 'bg-white border-gray-200 text-gray-800' }}">
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <!-- Left: Status Info -->
+            <div class="flex items-center gap-4">
+                <!-- Animated Status Indicator -->
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0 relative
+                    {{ $isMaintenance ? 'bg-white/15' : 'bg-amber-50' }}">
+                    <span id="maintenanceEmoji">{{ $isMaintenance ? '🔧' : '✅' }}</span>
+                    @if($isMaintenance)
+                    <span class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-400 border-2 border-red-800 rounded-full animate-pulse"></span>
+                    @endif
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="font-title font-black text-sm {{ $isMaintenance ? 'text-white' : 'text-sqr-dark' }}">
+                            Mode Pemeliharaan Sistem
+                        </h3>
+                        <span id="maintenanceBadge" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider
+                            {{ $isMaintenance ? 'bg-white/20 text-white border border-white/30' : 'bg-emerald-100 text-emerald-800 border border-emerald-200' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ $isMaintenance ? 'bg-red-300 animate-pulse' : 'bg-emerald-500' }}"></span>
+                            {{ $isMaintenance ? 'AKTIF – Web Tidak Dapat Diakses' : 'NONAKTIF – Web Berjalan Normal' }}
+                        </span>
+                    </div>
+                    <p class="text-xs mt-0.5 {{ $isMaintenance ? 'text-red-200' : 'text-gray-500' }}">
+                        {{ $isMaintenance
+                            ? 'Pengunjung diarahkan ke halaman peringatan pemeliharaan. Anda (Admin) tetap dapat mengakses seluruh fitur.'
+                            : 'Aktifkan untuk menampilkan halaman pemeliharaan kepada seluruh pengunjung website.' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Toggle Switch (inline form) -->
+            <div class="flex items-center gap-3 shrink-0">
+                <form action="{{ route('admin.maintenance.toggle') }}" method="POST" id="maintenanceToggleForm">
+                    @csrf
+                    <input type="hidden" name="maintenance_mode" id="maintenanceModeInput" value="{{ $isMaintenance ? '0' : '1' }}">
+                    <input type="hidden" name="maintenance_message" id="maintenanceMsgHidden" value="{{ $maintenanceMsg }}">
+                    <button type="button" id="maintenanceToggleBtn"
+                        onclick="confirmMaintenanceToggle()"
+                        class="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl font-title font-bold text-xs transition-all duration-300 shadow-md
+                        {{ $isMaintenance
+                            ? 'bg-white text-red-700 hover:bg-red-50 border border-red-200'
+                            : 'bg-sqr-orange hover:bg-orange-600 text-white' }}">
+                        <i class="fa-solid {{ $isMaintenance ? 'fa-power-off' : 'fa-wrench' }}"></i>
+                        {{ $isMaintenance ? 'Matikan Maintenance' : 'Aktifkan Maintenance' }}
+                    </button>
+                </form>
+
+                <!-- Settings Modal Trigger -->
+                <button type="button" onclick="document.getElementById('maintenanceSettingsModal').showModal()"
+                    class="w-10 h-10 rounded-2xl border-2 flex items-center justify-center transition
+                    {{ $isMaintenance ? 'border-white/30 text-white/70 hover:bg-white/10' : 'border-gray-200 text-gray-500 hover:bg-gray-100' }}">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        @if($isMaintenance)
+        <!-- Warning Banner when active -->
+        <div class="mt-4 flex items-center gap-2.5 bg-white/10 border border-white/20 rounded-2xl px-4 py-3">
+            <i class="fa-solid fa-triangle-exclamation text-amber-300 text-lg shrink-0"></i>
+            <div>
+                <p class="text-amber-200 font-bold text-xs">Peringatan: Semua aktivitas web publik terhenti!</p>
+                <p class="text-white/60 text-[11px] mt-0.5">
+                    Pesan ditampilkan: <em>"{{ $maintenanceMsg ?: 'Kami mohon maaf atas ketidaknyamanan ini...' }}"</em>
+                </p>
+            </div>
+        </div>
+        @endif
+    </div>
+
+    <!-- Maintenance Settings Modal (native <dialog>) -->
+    <dialog id="maintenanceSettingsModal" class="w-full max-w-lg rounded-3xl shadow-2xl p-0 bg-white border border-gray-100 backdrop:bg-black/50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-amber-100 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-screwdriver-wrench text-amber-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-title font-black text-sqr-dark text-base">Pengaturan Mode Pemeliharaan</h3>
+                        <p class="text-xs text-gray-500">Atur pesan yang ditampilkan ke pengunjung</p>
+                    </div>
+                </div>
+                <button type="button" onclick="document.getElementById('maintenanceSettingsModal').close()"
+                    class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-gray-600"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('admin.maintenance.toggle') }}" method="POST" id="maintenanceSettingsForm">
+                @csrf
+                <input type="hidden" name="maintenance_mode" value="{{ $isMaintenance ? '1' : '0' }}">
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1.5">
+                            <i class="fa-solid fa-comment text-sqr-orange mr-1"></i> Pesan Pemeliharaan untuk Pengunjung
+                        </label>
+                        <textarea name="maintenance_message" rows="4"
+                            class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-sqr-orange/30 focus:border-sqr-orange outline-none resize-none transition"
+                            placeholder="Contoh: Kami sedang melakukan pembaruan sistem. Mohon coba kembali dalam 30 menit.">{{ $maintenanceMsg }}</textarea>
+                        <p class="text-[11px] text-gray-400 mt-1">Kosongkan untuk menggunakan pesan default.</p>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-100 rounded-2xl px-4 py-3 text-xs text-amber-800 flex items-start gap-2">
+                        <i class="fa-solid fa-info-circle mt-0.5 shrink-0"></i>
+                        <span>Mengubah pesan <strong>tidak</strong> mengubah status aktif/nonaktif mode pemeliharaan. Gunakan tombol di atas untuk mengaktifkan/menonaktifkan.</span>
+                    </div>
+
+                    <div class="flex items-center gap-3 pt-2">
+                        <button type="submit"
+                            class="flex-1 bg-sqr-green hover:bg-sqr-dark text-white font-title font-bold text-sm py-3 rounded-2xl transition shadow-md">
+                            <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Pesan
+                        </button>
+                        <button type="button" onclick="document.getElementById('maintenanceSettingsModal').close()"
+                            class="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm rounded-2xl transition">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- Confirmation Modal (native <dialog>) -->
+    <dialog id="maintenanceConfirmModal" class="w-full max-w-sm rounded-3xl shadow-2xl p-0 bg-white border border-gray-100 backdrop:bg-black/50">
+        <div class="p-6 text-center">
+            <div class="w-16 h-16 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-4" id="confirmIconWrapper">
+                🔧
+            </div>
+            <h3 class="font-title font-black text-sqr-dark text-lg mb-2" id="confirmTitle">Aktifkan Mode Pemeliharaan?</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-6" id="confirmMessage">
+                Website akan tidak dapat diakses oleh pengunjung. Anda (Admin) tetap dapat mengakses semua fitur.
+            </p>
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="document.getElementById('maintenanceConfirmModal').close()"
+                    class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm rounded-2xl transition">
+                    Batal
+                </button>
+                <button type="button" id="confirmMaintenanceBtn"
+                    class="flex-1 px-4 py-3 font-title font-bold text-sm rounded-2xl transition shadow-md" id="confirmOkBtn">
+                    Ya, Lanjutkan
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    @if(session('success'))
+    <div id="successToast"
+         class="fixed bottom-5 right-5 z-50 flex items-center gap-3 bg-sqr-green text-white px-5 py-4 rounded-2xl shadow-2xl border border-white/20 max-w-xs"
+         x-data="{ show: true }" style="animation: slideInToast 0.4s ease-out;">
+        <i class="fa-solid fa-circle-check text-sqr-light-green text-lg shrink-0"></i>
+        <div>
+            <p class="font-bold text-xs">Berhasil!</p>
+            <p class="text-xs text-white/80">{{ session('success') }}</p>
+        </div>
+        <button onclick="this.parentElement.remove()" class="ml-auto text-white/50 hover:text-white">
+            <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+    </div>
+    <style>
+        @keyframes slideInToast {
+            from { opacity: 0; transform: translateX(100%); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+    <script>
+        setTimeout(function() {
+            var toast = document.getElementById('successToast');
+            if (toast) toast.remove();
+        }, 5000);
+    </script>
+    @endif
+
+    <script>
+    function confirmMaintenanceToggle() {
+        var isCurrentlyActive = {{ $isMaintenance ? 'true' : 'false' }};
+        var modal = document.getElementById('maintenanceConfirmModal');
+        var title = document.getElementById('confirmTitle');
+        var msg = document.getElementById('confirmMessage');
+        var btn = document.getElementById('confirmMaintenanceBtn');
+        var icon = document.getElementById('confirmIconWrapper');
+
+        if (isCurrentlyActive) {
+            title.textContent = 'Nonaktifkan Mode Pemeliharaan?';
+            msg.textContent = 'Website akan kembali dapat diakses oleh seluruh pengunjung secara normal.';
+            icon.textContent = '✅';
+            btn.className = 'flex-1 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-title font-bold text-sm rounded-2xl transition shadow-md';
+        } else {
+            title.textContent = 'Aktifkan Mode Pemeliharaan?';
+            msg.textContent = 'Website akan tidak dapat diakses oleh pengunjung. Anda (Admin) tetap dapat mengakses semua fitur.';
+            icon.textContent = '🔧';
+            btn.className = 'flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-title font-bold text-sm rounded-2xl transition shadow-md';
+        }
+
+        btn.onclick = function() {
+            document.getElementById('maintenanceToggleForm').submit();
+        };
+
+        modal.showModal();
+    }
+    </script>
+
+
     <!-- Metric Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
